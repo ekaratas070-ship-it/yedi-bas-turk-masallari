@@ -59,6 +59,7 @@ Metinler Pertev Naili Boratav ve Tahir Alangu derlemelerinden alındı. Sayfa te
 - `vize_raporu.tex` — rapor kaynağı
 - `86230008_Hanife_Elanur_Karatas_vize.pdf` — rapor
 - `hafta2.png` … `hafta6.png` — haftalık çalışma görüntüleri
+- `ekran1.png`, `ekran2.png` — rapor için alınan masaüstü ve telefon görüntüleri
 
 ## Kaynakça
 
