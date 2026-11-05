@@ -11,18 +11,47 @@ https://www.youtube.com/watch?v=rfmjC4m0ubo
 
 ## Proje
 
-Türk masallarından sekiz anlatının yer aldığı tek dosyalık web sayfası. Yedi masal yedi kötü huyu temsil eder; sekizincisi "Hüküm" başlığıyla Tuz Kadar Sevmek masalına ayrılmıştır. Sayfa harici kütüphane kullanmaz, `index.html` açıldığında internetsiz de görüntülenir.
+Yedi Baş, Türk masal geleneğinden sekiz anlatıyı tek sayfalık bir okuma arayüzünde bir araya getiren bir web sayfası. Kurgu, Türk mitolojisindeki yedi başlı ejderha motifine dayanıyor: ejderhanın yedi başı insan nefsinin yedi kötü huyunu temsil ediyor. Sekizinci anlatı "Hüküm" başlığıyla ayrı tutulmuş ve Tuz Kadar Sevmek masalına ayrılmış.
+
+Metinler Pertev Naili Boratav ve Tahir Alangu derlemelerinden alındı. Sayfa tek bir `index.html` dosyasından oluşuyor; harici CSS, JavaScript, yazı tipi veya CDN isteği yok. Dosya açıldığı anda internetsiz çalışır.
 
 ## Masallar
 
-1. Kibir — Kibirli Padişah Kızı
-2. Tamah — Keloğlan ile Köse
-3. Haset — Nardaniye Hanım
-4. Gazap — Üç Nasihat
-5. Zulüm — Keloğlan ve Yedi Başlı Dev
-6. İftira — Sedef Bacı
-7. Vefasızlık — Ak Yılan Masalı
-8. Hüküm — Tuz Kadar Sevmek
+| Baş | Huy | Masal | Kaynak |
+|-----|-----|-------|--------|
+| 1 | Kibir | Kibirli Padişah Kızı | Alangu, Billur Köşk Masalları |
+| 2 | Tamah | Keloğlan ile Köse | Boratav, Zaman Zaman İçinde |
+| 3 | Haset | Nardaniye Hanım | Boratav, Zaman Zaman İçinde |
+| 4 | Gazap | Üç Nasihat | Boratav, Zaman Zaman İçinde |
+| 5 | Zulüm | Keloğlan ve Yedi Başlı Dev | Boratav, Az Gittik Uz Gittik |
+| 6 | İftira | Sedef Bacı | Alangu, Billur Köşk Masalları |
+| 7 | Vefasızlık | Ak Yılan Masalı | Boratav, Az Gittik Uz Gittik |
+| 8 | Hüküm | Tuz Kadar Sevmek | Boratav & Alangu derlemeleri |
+
+## Sayfada Ne Var
+
+- Sol fihrist: sekiz masal, huy etiketiyle listeleniyor.
+- Ejderha gravürü: yedi başlı SVG çizim, her baş tıklanabilir ve ilgili masalı okuma paneline getiriyor.
+- Okuma paneli: masal başlığı, künye, özet, metin ve kapanış cümlesi.
+- Baş sayacı: okunan her masalda "X/7 baş kesildi" güncelleniyor, durum tarayıcıda saklanıyor.
+- Huy süzgeci: yedi huy sekmesi, seçilen huya ait masalları listeliyor.
+- Okuma kolaylıkları: gece/gündüz tema, A+ / A− yazı boyutu, okuma ilerleme çubuğu.
+- Klavye: J/K veya yukarı/aşağı ok ile masallar arasında geçiş, Esc ile paneli kapatma.
+- Rastgele masal ve önceki/sonraki düğmeleri.
+- Mobilde tek sütun düzen ve yapışkan üst çubuk.
+
+## Teknik Yapı
+
+- HTML, CSS ve JavaScript aynı dosyada; hiçbir kütüphane kullanılmadı.
+- Masal metinleri JavaScript içinde bir dizi olarak tutuluyor; seçilen masal bu diziden okunup panele basılıyor.
+- Renkler CSS değişkenleriyle tanımlı: çini laciverti `#0E1D2B`, firuze `#1D7885`, mermer beyazı `#F4F7F7`, kökboya kırmızısı `#A62620`, tezhip altını `#C89D42`.
+- Yazı tipleri işletim sisteminden seçiliyor, dosyaya gömülü font yok.
+- Bölümlerde `aria` etiketleri ve klavye erişimi var.
+- Her masalın kendi adresi var (`#masal-adi`), bağlantı paylaşılabilir.
+
+## Çalıştırma
+
+`index.html` dosyasını indirip çift tıklamak yeterli. Sunucu, kurulum veya internet bağlantısı gerekmiyor.
 
 ## Dosyalar
 
