@@ -11,6 +11,7 @@
 \usepackage{amssymb}
 \usepackage{ifthen}
 \usepackage{graphicx}
+\usepackage{float}
 \usepackage{listings}
 \usepackage{xcolor}
 
@@ -46,7 +47,8 @@
     
     {\Huge \textbf{YEDİ BAŞ}}\\[0.6cm]
     {\LARGE Türk Masallarında Yedi Kötü Huy ve Bir Hüküm}\\[0.4cm]
-    {\large Türk Masalları Derlemesi Web Sayfası Vize Raporu}\\[2.5cm]
+    {\large Türk Masalları Derlemesi Web Sayfası}\\[0.2cm]
+    {\large Vize Raporu}\\[2.5cm]
     
     \textbf{Ders:} Programlamaya Giriş\\[0.2cm]
     \textbf{Öğretim Üyesi:} Öğr. Gör. Meral Şentürk\\[1.5cm]
@@ -95,7 +97,7 @@ Bu rapor, Programlamaya Giriş dersi vize ödevi kapsamında hazırlanan ``Yedi 
 \toprule
 \textbf{Gereksinim} & \textbf{Durum} \\
 \midrule
-Masal sayısı 8--12 arasında (8 masal) & $\boxtimes$ Karşılandı (8 canonical Türk masalı) \\
+Masal sayısı 8--12 arasında (8 masal) & $\boxtimes$ Karşılandı (8 Türk masalı) \\
 Tek HTML dosyası & $\boxtimes$ Karşılandı (\texttt{index.html}) \\
 Stil kodları içsel (\texttt{<style>} içinde) & $\boxtimes$ Karşılandı (Harici CSS kullanılmadı) \\
 Betik kodları içsel (\texttt{<script>} içinde) & $\boxtimes$ Karşılandı (Harici JS kullanılmadı) \\
@@ -162,7 +164,7 @@ Yazı tipi: Palatino Linotype / Georgia & --- & Başlık ve metinlerde kullanıl
 \begin{itemize}
     \item \textbf{Okunabilirlik:} Okuma sütununun genişliği 62 karakterle (\texttt{max-width: 62ch}) sınırlandırılmış, gövde metni en az 1.22rem boyutunda tutulmuştur. Okuma alanında koyu mürekkep ile açık kâğıt zemini kullanılarak metin-zemin karşıtlığı yüksek tutulmuştur. Kullanıcı A$-$ / A+ düğmeleriyle yazı boyutunu, gece düğmesiyle temayı değiştirebilmektedir.\par
     \item \textbf{Gezinme:} Masallara sol fihristten, huy süzgecinden, ejderha levhasındaki tıklanabilir başlardan veya klavyedeki J/K (yukarı/aşağı) tuşlarından ulaşılabilmektedir. Seçilen masal adres çubuğuna yazıldığı için bağlantı paylaşıldığında aynı masal açılmaktadır.\par
-    \item \textbf{Duyarlı Tasarım:} Geniş ekranda fihrist ile okuma alanı yan yana iki sütun hâlinde çalışmakta; 900 pikselin altındaki genişliklerde düzen tek sütuna dönmekte ve sayfa başına yapışkan bir mobil çubuk eklenmektedir.\par
+    \item \textbf{Duyarlı Tasarım:} Geniş ekranda fihrist ile okuma alanı yan yana iki sütun hâlinde çalışmakta; 960 pikselin altındaki genişliklerde düzen tek sütuna dönmekte ve sayfa başına yapışkan bir mobil çubuk eklenmektedir.\par
     \item \textbf{Tutarlılık:} Başlık hiyerarşisi, bölüm aralıkları ve renk kullanımı sayfa boyunca aynı kuralla uygulanmıştır; kökboya kırmızısı yalnızca etkin öğe ve kesilen başlar için kullanılmıştır.
 \end{itemize}
 
@@ -190,8 +192,10 @@ Sayfa anlamsal (semantic) HTML5 etiketleriyle kurgulanmıştır:
     \item \texttt{<footer class="alt-bilgi">}: Kaynakça ve proje künyesini sunar.
 \end{itemize}
 
+\newpage
 \subsection{İçsel CSS}
 CSS kodları tamamen \texttt{<style>} etiketi altında toplanmış; CSS Custom Properties (değişkenler) kullanılarak dinamik gece modu yönetilmiştir:
+\noindent{\small\textbf{Listing 1:} İçsel CSS'ten önemli bir bölüm}
 \begin{lstlisting}[language=HTML]
 /* Cini ve Kilim Renk Degiskenleri */
 :root {
@@ -213,18 +217,30 @@ html[data-tema="gece"] {
 
 \subsection{İçsel JavaScript}
 JavaScript mimarisi; dış kütüphanelere dayanmadan modern Vanilla JS ile yazılmıştır. Masal verileri \texttt{ANLATILAR} dizisi altında nesneler olarak saklanır. Hash tabanlı yönlendirme (\texttt{window.location.hash}) sayesinde sayfa yenilense dahi kullanıcının kaldığı masal korunur:
+\noindent{\small\textbf{Listing 2:} İçsel JavaScript'ten önemli bir bölüm}
 \begin{lstlisting}[language=Java]
-// Masal secimi ve arayuz guncelleme fonksiyonu
-function anlatiyiSec(id, gecmiseEkle) {
-  const anlati = ANLATILAR.find(item => item.id === id);
-  if (!anlati) return;
-  seciliAnlatiId = id;
-  if (!okunanAnlatilar.includes(id)) {
-    okunanAnlatilar.push(id);
+// Hash'ten gelen id'ye gore masali okuma panelinde acar
+function anlatiGoster(id) {
+  const indeks = ANLATILAR.findIndex(item => item.id === id);
+  const bosDefter = document.getElementById("bos-defter");
+  const anlatiGorunumu = document.getElementById("anlati-gorunumu");
+
+  // Gecersiz ya da bos hash ise katalog kapagi gosterilir
+  if (indeks === -1) {
+    seciliAnlatiId = null;
+    bosDefter.classList.remove("gizli");
+    anlatiGorunumu.classList.remove("aktif");
+    return;
   }
-  ejderhaVeMuhurleriGuncelle();
-  fihristiGuncelle();
-  icerikPaneliniDoldur(anlati);
+
+  const a = ANLATILAR[indeks];
+  seciliAnlatiId = a.id;
+  if (!okunanAnlatilar.includes(a.id)) {
+    okunanAnlatilar.push(a.id);          // bas sayaci bu diziden okur
+  }
+
+  ejderhaVeMuhurleriGuncelle();          // muhurler ve sayac tazelenir
+  // izleyen satirlarda baslik, kunye ve paragraflar panele yazilir
 }
 \end{lstlisting}
 
@@ -271,8 +287,8 @@ Yapay zekâ ile üretilen kod sayfaya eklenmeden önce bölüm bölüm incelendi
   {\fbox{\parbox[c][3.2cm][c]{5.7cm}{\centering\scriptsize görsel eklenecek}}}%
 }
 \newcommand{\katilim}[1]{%
-  \ifthenelse{\equal{#1}{ders}}{\textbf{Ders içi:} $\boxtimes$\quad \textbf{Telafi:} $\square$}%
-  {\textbf{Ders içi:} $\square$\quad \textbf{Telafi:} $\boxtimes$}%
+  \ifthenelse{\equal{#1}{ders}}{$\boxtimes$ Ders içinde katılım sergiledim\newline $\square$ Telafi yaptım}%
+  {$\square$ Ders içinde katılım sergiledim\newline $\boxtimes$ Telafi yaptım}%
 }
 
 \begin{longtable}{p{8.7cm}p{6.3cm}}
@@ -287,21 +303,21 @@ Yapay zekâ ile üretilen kod sayfaya eklenmeden önce bölüm bölüm incelendi
 \endhead
 \bottomrule
 \endfoot
-\textbf{1. Hafta}\newline \textit{Commit:} yok. & \haftagorsel{hafta1.png} \\
+\textbf{1. Hafta}\newline \katilim{telafi}\newline \textit{Commit:} yok. & \haftagorsel{hafta1.png} \\
 \midrule
-\textbf{2. Hafta}\newline ``WorldWideWeb'' tanıtım sayfası yapıldı: başlık, paragraf, liste ve bağlantı etiketleri kullanıldı, sayfaya lacivert bir tema uygulandı. Telafi çalışması olarak HTML iskeleti ve temel CSS kuralları bu hafta oturdu.\newline \textit{Commit:} yok. & \haftagorsel{hafta2.png} \\
+\textbf{2. Hafta}\newline ``WorldWideWeb'' tanıtım sayfası yapıldı: başlık, paragraf, liste ve bağlantı etiketleri kullanıldı, sayfaya lacivert bir tema uygulandı. Telafi çalışması olarak HTML iskeleti ve temel CSS kuralları bu hafta oturdu.\newline \katilim{telafi}\newline \textit{Commit:} yok. & \haftagorsel{hafta2.png} \\
 \midrule
-\textbf{3. Hafta}\newline ``Kahvenin Yolculuğu'' sayfası hazırlandı; yeşil bir renk paleti, yazı tipi seçimi, görsel yerleşimi ve buton stilleri denendi. Telafi kapsamında renk ve tipografi kararları bu hafta verildi.\newline \textit{Commit:} \href{https://teams.microsoft.com/l/message/19:76e81a64fe6448979da4ee91dd5a3fb4@thread.tacv2/1790795699823?tenantId=afb14aed-4a54-433f-9753-519aa64a3e48\&groupId=7a5bb549-3faf-4a84-bb15-8be3b76924ba\&parentMessageId=1790795699823\&teamName=*26-27.86.GIT3168820.PROGRAMLAMAYA\%20G\%C4\%B0R\%C4\%B0\%C5\%9E\%20(A)\&channelName=Kat\%C4\%B1l\%C4\%B1m\%20Telafi\%20Genel\&createdTime=1790795699823}{Teams kaydı} & \haftagorsel{hafta3.png} \\
+\textbf{3. Hafta}\newline ``Kahvenin Yolculuğu'' sayfası hazırlandı; yeşil bir renk paleti, yazı tipi seçimi, görsel yerleşimi ve buton stilleri denendi. Telafi kapsamında renk ve tipografi kararları bu hafta verildi.\newline \katilim{telafi}\newline \textit{Commit:} \href{https://teams.microsoft.com/l/message/19:76e81a64fe6448979da4ee91dd5a3fb4@thread.tacv2/1790795699823?tenantId=afb14aed-4a54-433f-9753-519aa64a3e48\&groupId=7a5bb549-3faf-4a84-bb15-8be3b76924ba\&parentMessageId=1790795699823\&teamName=*26-27.86.GIT3168820.PROGRAMLAMAYA\%20G\%C4\%B0R\%C4\%B0\%C5\%9E\%20(A)\&channelName=Kat\%C4\%B1l\%C4\%B1m\%20Telafi\%20Genel\&createdTime=1790795699823}{Teams kaydı} & \haftagorsel{hafta3.png} \\
 \midrule
-\textbf{4. Hafta}\newline Aynı sayfaya ``Kahve Türleri'' bölümü eklendi; listeler, sınıf tanımlı bilgi kutusu, kimlik ile bölüm bağlantısı ve alt bilgi yazıldı. Telafi çalışması olarak bölüm içi bağlantı mantığı bu hafta uygulandı.\newline \textit{Commit:} yok. & \haftagorsel{hafta4.png} \\
+\textbf{4. Hafta}\newline Aynı sayfaya ``Kahve Türleri'' bölümü eklendi; listeler, sınıf tanımlı bilgi kutusu, kimlik ile bölüm bağlantısı ve alt bilgi yazıldı. Telafi çalışması olarak bölüm içi bağlantı mantığı bu hafta uygulandı.\newline \katilim{telafi}\newline \textit{Commit:} yok. & \haftagorsel{hafta4.png} \\
 \midrule
-\textbf{5. Hafta}\newline JavaScript'e giriş yapıldı; ``Şekilleri Eşleştir'' oyununda butonlara tıklama olayı ve açılan kartların diziyle takibi kuruldu. Telafi kapsamında olay dinleyicileri ve dizi yöntemleri bu hafta çalışıldı.\newline \textit{Commit:} \href{https://teams.microsoft.com/l/message/19:76e81a64fe6448979da4ee91dd5a3fb4@thread.tacv2/1792005183740?tenantId=afb14aed-4a54-433f-9753-519aa64a3e48\&groupId=7a5bb549-3faf-4a84-bb15-8be3b76924ba\&parentMessageId=1791960451608\&teamName=*26-27.86.GIT3168820.PROGRAMLAMAYA\%20G\%C4\%B0R\%C4\%B0\%C5\%9E\%20(A)\&channelName=Kat\%C4\%B1l\%C4\%B1m\%20Telafi\%20Genel\&createdTime=1792005183740}{Teams kaydı} & \haftagorsel{hafta5.png} \\
+\textbf{5. Hafta}\newline JavaScript'e giriş yapıldı; ``Şekilleri Eşleştir'' oyununda butonlara tıklama olayı ve açılan kartların diziyle takibi kuruldu. Telafi kapsamında olay dinleyicileri ve dizi yöntemleri bu hafta çalışıldı.\newline \katilim{telafi}\newline \textit{Commit:} \href{https://teams.microsoft.com/l/message/19:76e81a64fe6448979da4ee91dd5a3fb4@thread.tacv2/1792005183740?tenantId=afb14aed-4a54-433f-9753-519aa64a3e48\&groupId=7a5bb549-3faf-4a84-bb15-8be3b76924ba\&parentMessageId=1791960451608\&teamName=*26-27.86.GIT3168820.PROGRAMLAMAYA\%20G\%C4\%B0R\%C4\%B0\%C5\%9E\%20(A)\&channelName=Kat\%C4\%B1l\%C4\%B1m\%20Telafi\%20Genel\&createdTime=1792005183740}{Teams kaydı} & \haftagorsel{hafta5.png} \\
 \midrule
-\textbf{6. Hafta}\newline Anlamsal HTML işlendi; ``Evrenin Sırları'' sayfasında header, nav, section ve article etiketleriyle haber kartları oluşturuldu. Telafi çalışması olarak anlamsal etiketlerin erişilebilirlik açısından önemi bu hafta görüldü.\newline \textit{Commit:} \href{https://teams.microsoft.com/l/message/19:76e81a64fe6448979da4ee91dd5a3fb4@thread.tacv2/1792664391979?tenantId=afb14aed-4a54-433f-9753-519aa64a3e48\&groupId=7a5bb549-3faf-4a84-bb15-8be3b76924ba\&parentMessageId=1792565991141\&teamName=*26-27.86.GIT3168820.PROGRAMLAMAYA\%20G\%C4\%B0R\%C4\%B0\%C5\%9E\%20(A)\&channelName=Kat\%C4\%B1l\%C4\%B1m\%20Telafi\%20Genel\&createdTime=1792664391979}{Teams kaydı} & \haftagorsel{hafta6.png} \\
+\textbf{6. Hafta}\newline Anlamsal HTML işlendi; ``Evrenin Sırları'' sayfasında header, nav, section ve article etiketleriyle haber kartları oluşturuldu. Telafi çalışması olarak anlamsal etiketlerin erişilebilirlik açısından önemi bu hafta görüldü.\newline \katilim{telafi}\newline \textit{Commit:} \href{https://teams.microsoft.com/l/message/19:76e81a64fe6448979da4ee91dd5a3fb4@thread.tacv2/1792664391979?tenantId=afb14aed-4a54-433f-9753-519aa64a3e48\&groupId=7a5bb549-3faf-4a84-bb15-8be3b76924ba\&parentMessageId=1792565991141\&teamName=*26-27.86.GIT3168820.PROGRAMLAMAYA\%20G\%C4\%B0R\%C4\%B0\%C5\%9E\%20(A)\&channelName=Kat\%C4\%B1l\%C4\%B1m\%20Telafi\%20Genel\&createdTime=1792664391979}{Teams kaydı} & \haftagorsel{hafta6.png} \\
 \midrule
-\textbf{7. Hafta}\newline \textit{Commit:} yok. & \haftagorsel{hafta7.png} \\
+\textbf{7. Hafta}\newline \katilim{telafi}\newline \textit{Commit:} yok. & \haftagorsel{hafta7.png} \\
 \midrule
-\textbf{8. Hafta}\newline \textit{Commit:} yok. & \haftagorsel{hafta8.png} \\
+\textbf{8. Hafta}\newline \katilim{telafi}\newline \textit{Commit:} yok. & \haftagorsel{hafta8.png} \\
 \end{longtable}
 
 \noindent\footnotesize Haftalık çalışmalar GitHub'a değil, dersin Teams kanalına yüklendiği için commit numarası bulunmamaktadır; 3, 5 ve 6. haftaların Teams bağlantıları tabloda verilmiştir. 1, 7 ve 8. haftalar için kayıt bulunmadığından bu satırlar boş bırakılmıştır.\normalsize
@@ -331,7 +347,7 @@ Tek sütun düzen & --- & Çalışıyor (taşma yok) \\
 \end{table}
 
 \section{Sunum Videosu}
-\textbf{Video Süresi:} 13 dakika 24 saniye (12--18 dakika kuralına uygun)\\
+\textbf{Video Süresi:} 13:24 (13 dakika 24 saniye; 12--18 dakika kuralına uygun)\\
 \textbf{Görünürlük:} Listelenmemiş (Unlisted)\\
 \textbf{Bağlantı:} \url{https://www.youtube.com/watch?v=rfmjC4m0ubo}
 
@@ -355,10 +371,11 @@ Bu projede HTML, CSS ve JavaScript'in tek dosya içinde birlikte nasıl çalış
     \item Boratav, P. N. (2015). \textit{Az Gittik Uz Gittik}. İmge Kitabevi, Ankara.
     \item Alangu, T. (2016). \textit{Billur Köşk Masalları}. Yapı Kredi Yayınları, İstanbul.
     \item Eberhard, W., \& Boratav, P. N. (1953). \textit{Typen Türkischer Volksmärchen}. Franz Steiner Verlag, Wiesbaden.
-    \item Mozilla Developer Network (MDN). \textit{Web Docs: HTML, CSS and JavaScript Reference}. \url{https://developer.mozilla.org/}.
+    \item Mozilla Developer Network (MDN). \textit{Web Docs: HTML, CSS and JavaScript Reference}. \url{https://developer.mozilla.org/}. Erişim: 5 Kasım 2026.
 \end{enumerate}
 
 \appendix
+\newpage
 \section{Teslim Kontrol Listesi}
 \begin{itemize}
     \item[$\boxtimes$] MEBİS'e yalnızca bu raporun PDF'i yüklenecektir; HTML veya zip yüklenmeyecektir.

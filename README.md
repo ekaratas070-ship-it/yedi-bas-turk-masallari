@@ -13,7 +13,7 @@ https://www.youtube.com/watch?v=rfmjC4m0ubo
 
 Yedi Baş, Türk masal geleneğinden sekiz anlatıyı tek sayfalık bir okuma arayüzünde bir araya getiren bir web sayfası. Kurgu, Türk mitolojisindeki yedi başlı ejderha motifine dayanıyor: ejderhanın yedi başı insan nefsinin yedi kötü huyunu temsil ediyor. Sekizinci anlatı "Hüküm" başlığıyla ayrı tutulmuş ve Tuz Kadar Sevmek masalına ayrılmış.
 
-Metinler Pertev Naili Boratav ve Tahir Alangu derlemelerinden alındı. Sayfa tek bir `index.html` dosyasından oluşuyor; harici CSS, JavaScript, yazı tipi veya CDN isteği yok. Dosya açıldığı anda internetsiz çalışır.
+Metinler, Pertev Naili Boratav ve Tahir Alangu derlemelerinden yararlanılarak yapay zekâ yardımıyla yeniden yazıldı; kullanılan araçlar raporda belirtildi. Sayfa tek bir `index.html` dosyasından oluşuyor; harici CSS, JavaScript, yazı tipi veya CDN isteği yok. Dosya açıldığı anda internetsiz çalışır.
 
 ## Masallar
 
@@ -47,7 +47,7 @@ Metinler Pertev Naili Boratav ve Tahir Alangu derlemelerinden alındı. Sayfa te
 - Renkler CSS değişkenleriyle tanımlı: çini laciverti `#0E1D2B`, firuze `#1D7885`, mermer beyazı `#F4F7F7`, kökboya kırmızısı `#A62620`, tezhip altını `#C89D42`.
 - Yazı tipleri işletim sisteminden seçiliyor, dosyaya gömülü font yok.
 - Bölümlerde `aria` etiketleri ve klavye erişimi var.
-- Her masalın kendi adresi var (`#masal-adi`), bağlantı paylaşılabilir.
+- Her masalın kendi adresi var (`#/bas/1-kibir` gibi), bağlantı paylaşılabilir.
 
 ## Çalıştırma
 
