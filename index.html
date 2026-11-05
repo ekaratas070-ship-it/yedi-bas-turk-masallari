@@ -1,0 +1,942 @@
+<!DOCTYPE html>
+<html lang="tr" data-tema="gunduz">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Yedi Baş — Türk Masallarında Yedi Kötü Huy ve Bir Hüküm</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%230E1D2B'/%3E%3Cpolygon points='16,2 20,12 30,16 20,20 16,30 12,20 2,16 12,12' fill='%231D7885' stroke='%23C89D42' stroke-width='1.2'/%3E%3Cpolygon points='16,7 25,16 16,25 7,16' fill='%23A62620' stroke='%23C89D42' stroke-width='1'/%3E%3Ccircle cx='16' cy='16' r='3' fill='%23C89D42'/%3E%3C/svg%3E">
+  <style>
+    /* ==========================================================================
+       BÖLÜM 1: RENK DEĞİŞKENLERİ VE YAZI TİPLERİ (GÜNDÜZ VE GECE MODU)
+       Açıklama: Bütün sitede kullanılan Türk çini ve kilim renklerini burada
+       tek bir merkezden tanımlıyoruz. Böylece renkleri değiştirmek çok kolay olur.
+       ========================================================================== */
+    :root {
+      /* Gündüz Modu Renkleri */
+      --dis-zemin: #0E1D2B;       /* Dış sayfa arka planı: Selçuklu Çini Laciverti */
+      --lacivert: #12263A;        /* Başlıklar ve çini kuşak zemini */
+      --firuze: #1D7885;          /* Türk Mavisi / Firuze çini vurgu rengi */
+      --kagit: #E9EFF0;           /* Sol menü fihrist zemini: İznik çini hamuru */
+      --panel: #F4F7F7;           /* Sağ okuma odası zemini: Mermer beyazı */
+      --murekkep: #101C26;        /* Okuma metinleri: Koyu çini mürekkebi rengi */
+      --kirmizi: #A62620;         /* Vurgular ve sınırlar: Anadolu kökboya kilim kırmızısı */
+      --altin: #C89D42;           /* Çerçeveler ve detaylar: Selçuklu tezhip ve kündekâri altını */
+      --cizgi: #B8C7CB;           /* Bölümler arası ince cetvel çizgisi */
+      
+      /* Yazı Tipleri (Dışarıdan yükleme yapmadan doğrudan işletim sistemindeki fontları kullanır) */
+      --font-serif: "Palatino Linotype", "Book Antiqua", Palatino, "Iowan Old Style", Constantia, Georgia, "Times New Roman", serif;
+      --font-sans: "Segoe UI", system-ui, -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
+      --olcek: 1;                 /* A- ve A+ butonlarıyla değişen yazı boyutu çarpanı */
+    }
+
+    /* Gece Modu: Gece butonuna tıklandığında yukarıdaki renkler otomatik olarak bu koyu tonlara dönüşür */
+    html[data-tema="gece"] {
+      --dis-zemin: #070F17; --lacivert: #0B1724; --firuze: #2892A1;
+      --kagit: #0E1C2B; --panel: #122334; --murekkep: #E6EEF0;
+      --kirmizi: #C83A32; --altin: #D4AB50; --cizgi: #243B50;
+    }
+
+    /* ==========================================================================
+       BÖLÜM 2: SAYFA TEMEL SIFIRLAMASI VE SABİT SELÇUKLU ARKA PLANI
+       ========================================================================== */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { min-height: 100dvh; background-color: var(--dis-zemin); color: var(--murekkep); font-family: var(--font-serif); overflow-x: hidden; display: flex; flex-direction: column; }
+    :focus-visible { outline: 2px solid var(--altin); outline-offset: 2px; }
+    .selcuklu-arka-plan { position: fixed; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 0; opacity: 0.22; }
+
+    /* ==========================================================================
+       BÖLÜM 3: DIŞ KİTAP ÇERÇEVESİ, ÜST ŞERİT VE KÖKBOYA KİLİM BORDÜRÜ
+       ========================================================================== */
+    .sayfa-kapsayici { width: 100%; max-width: 1460px; margin: 0 auto; padding: 1.25rem 2rem 2.25rem; flex: 1; display: flex; flex-direction: column; position: relative; z-index: 1; }
+    .forma-cercevesi { border: 3px solid var(--altin); outline: 1px solid var(--firuze); outline-offset: -7px; background-color: var(--kagit); flex: 1; display: flex; flex-direction: column; }
+    .tamga-kusagi { background-color: var(--lacivert); color: var(--altin); border-bottom: 2px solid var(--altin); padding: 0.45rem 1.25rem; display: flex; justify-content: flex-start; align-items: center; text-align: left; font-family: var(--font-sans); font-size: 0.68rem; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; }
+    .tamga-kusagi > div { margin-right: auto; margin-left: 0; text-align: left; }
+    .ust-kilim-kusagi { width: 100%; height: 24px; background-color: var(--kirmizi); border-bottom: 2px solid var(--altin); overflow: hidden; }
+    .ust-kilim-kusagi svg { width: 100%; height: 24px; display: block; }
+
+    /* ==========================================================================
+       BÖLÜM 4: ÜST BAŞLIK (MASTHEAD) VE SAĞDAKİ YEDİ BAŞLI EJDERHA GRAVÜRÜ
+       Açıklama: Sol tarafta projenin ana başlığı ve sunuşu, sağ tarafta ise
+       Dede Korkut'taki Salur Kazan boyundan esinlenen 7 başlı ejderha arması yer alır.
+       ========================================================================== */
+    .masthead-govde { display: grid; grid-template-columns: 1.05fr 1.15fr; background-color: var(--lacivert); color: #F4F7F7; border-bottom: 3px solid var(--altin); }
+    .masthead-sol { padding: 1.85rem 2.25rem; border-right: 2px solid var(--altin); display: flex; flex-direction: column; justify-content: space-between; }
+    .forma-damgasi { font-family: var(--font-sans); font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.18em; color: var(--altin); font-weight: 700; margin-bottom: 0.65rem; }
+    .masthead-baslik { font-size: clamp(2.9rem, 6vw, 5.2rem); font-weight: normal; letter-spacing: -0.02em; line-height: 0.92; color: #F4F7F7; margin-bottom: 0.75rem; }
+    .masthead-kunye { font-size: clamp(1.1rem, 1.5vw, 1.35rem); font-style: italic; line-height: 1.4; color: var(--altin); max-width: 42ch; }
+    .masthead-tez-notu { margin-top: 1.15rem; padding-top: 0.9rem; border-top: 1px solid var(--firuze); font-size: 0.94rem; line-height: 1.58; color: #D8E4E7; }
+    .masthead-tez-notu strong { color: var(--altin); }
+
+    .masthead-sag-gravur { background-color: #0B1826; padding: 1.15rem 1.5rem; display: flex; flex-direction: column; justify-content: space-between; }
+    .gravur-ust-etiket { display: flex; justify-content: space-between; font-family: var(--font-sans); font-size: 0.67rem; text-transform: uppercase; letter-spacing: 0.15em; color: var(--altin); border-bottom: 1px solid var(--firuze); padding-bottom: 0.4rem; margin-bottom: 0.45rem; font-weight: 700; }
+    .ejderha-gravur-kapsayici { width: 100%; display: flex; justify-content: center; padding: 0.15rem 0; }
+    .ejderha-gravur-kapsayici svg { width: 100%; max-width: 590px; height: auto; display: block; }
+    .ejderha-bas-grubu { cursor: pointer; }
+    .ejderha-bas-grubu .bas-cerceve { fill: #12263A; stroke: var(--altin); stroke-width: 1.4; }
+    .ejderha-bas-grubu .bas-dil { stroke: var(--kirmizi); fill: none; }
+    .ejderha-bas-grubu .bas-goz { fill: var(--altin); }
+    .ejderha-bas-grubu .bas-no { font-family: var(--font-serif); font-size: 8.5px; font-weight: bold; fill: var(--altin); }
+    .ejderha-bas-grubu .bas-isim-etiket { font-family: var(--font-sans); font-size: 7px; letter-spacing: 0.08em; fill: #E9EFF0; font-weight: 700; }
+    .ejderha-bas-grubu:hover .bas-cerceve { stroke: #F4F7F7; stroke-width: 2; fill: var(--firuze); }
+    .ejderha-bas-grubu:hover .bas-dil { stroke: #F4F7F7; stroke-width: 1.3; }
+    .ejderha-bas-grubu.kesildi .bas-cerceve { fill: var(--kirmizi); stroke: var(--altin); }
+    .ejderha-bas-grubu.kesildi .bas-goz, .ejderha-bas-grubu.kesildi .bas-no { stroke: #F4F7F7; fill: #F4F7F7; }
+    .ejderha-bas-grubu.kesildi .bas-dil { stroke: #F4F7F7; }
+    .ejderha-bas-grubu.secili .bas-cerceve { stroke: #F4F7F7; stroke-width: 2.3; }
+    .gravur-alt-not { font-size: 0.8rem; font-style: italic; text-align: right; color: #B8C7CB; padding-top: 0.35rem; border-top: 1px solid var(--firuze); }
+
+    /* ==========================================================================
+       BÖLÜM 5: YEDİ BAŞ OKUMA ŞERİDİ VE YAZI BOYUTU / GECE MODU BUTONLARI
+       Açıklama: Kullanıcının kaç hikaye okuduğunu gösteren elmas mühürler
+       ve A- / A+ / Gece modu butonlarının stilleri burada bulunur.
+       ========================================================================== */
+    .bas-seridi { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; padding: 0.5rem 1.5rem; border-bottom: 2px solid var(--murekkep); background-color: var(--kagit); }
+    .yedi-bas-gostergesi, .elmas-dizisi, .okuma-araclari { display: flex; align-items: center; gap: 0.45rem; flex-wrap: wrap; }
+    .gosterge-etiket { font-family: var(--font-sans); font-size: 0.69rem; text-transform: uppercase; letter-spacing: 0.15em; font-weight: 700; color: var(--lacivert); margin-right: 0.35rem; }
+    html[data-tema="gece"] .gosterge-etiket { color: var(--altin); }
+    .bas-elmas-buton, .hukum-isareti-buton { background: none; border: none; cursor: pointer; padding: 0.25rem 0.2rem; min-width: 30px; min-height: 44px; display: inline-flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; color: var(--murekkep); }
+    .bas-elmas-buton svg { width: 17px; height: 17px; display: block; }
+    .bas-elmas-buton .elmas-sekil { fill: var(--panel); stroke: var(--firuze); stroke-width: 1.6; }
+    .bas-elmas-buton.okundu .elmas-sekil { fill: var(--kirmizi); stroke: var(--kirmizi); }
+    .bas-elmas-buton.aktif-bas .elmas-sekil { stroke: var(--altin); stroke-width: 2.5; }
+    .elmas-mini-no { font-family: var(--font-sans); font-size: 0.58rem; font-weight: 600; }
+    .bas-elmas-buton.okundu .elmas-mini-no { color: var(--kirmizi); font-weight: 700; }
+    html[data-tema="gece"] .bas-elmas-buton.okundu .elmas-mini-no { color: var(--altin); }
+    .hukum-ayirici-cizgi { width: 2px; height: 22px; background-color: var(--firuze); margin: 0 0.25rem; }
+    .hukum-isareti-cizgi { display: block; width: 18px; height: 5px; border: 1.5px solid var(--firuze); margin-bottom: 2px; }
+    .hukum-isareti-buton.okundu .hukum-isareti-cizgi { background-color: var(--kirmizi); border-color: var(--kirmizi); }
+    .bas-sayac-metni { font-family: var(--font-sans); font-size: 0.72rem; letter-spacing: 0.14em; font-weight: 700; padding: 0.28rem 0.7rem; border: 1px solid var(--firuze); background-color: var(--lacivert); color: var(--altin); margin-left: 0.35rem; }
+    .arac-dugme { background: var(--panel); border: 1px solid var(--murekkep); color: var(--murekkep); font-family: var(--font-sans); font-size: 0.72rem; font-weight: 700; letter-spacing: 0.12em; min-height: 44px; min-width: 44px; padding: 0 0.8rem; cursor: pointer; }
+    .arac-dugme:hover { background-color: var(--kirmizi); color: #F4F7F7; border-color: var(--kirmizi); }
+    .arac-dugme[aria-pressed="true"] { background-color: var(--lacivert); color: var(--altin); border-color: var(--altin); }
+
+    /* ==========================================================================
+       BÖLÜM 6: İKİ SÜTUNLU ANA DÜZEN VE SOL FİHRİST (HİKÂYE LİSTESİ)
+       Açıklama: Sol tarafta kötü huylara göre filtreleme sekmeleri (Kibir, Tamah vb.)
+       ve 8 hikayenin sıralandığı dikey arşiv listesi yer alır.
+       ========================================================================== */
+    .okuma-odasi { display: grid; grid-template-columns: 380px 1fr; flex: 1; }
+    .arsiv-sutunu { position: sticky; top: 0; max-height: 100dvh; overflow-y: auto; border-right: 2px solid var(--murekkep); background-color: var(--kagit); display: flex; flex-direction: column; }
+    .arsiv-ust-bolum { padding: 0.9rem 1.15rem 0.65rem; border-bottom: 2px solid var(--firuze); background-color: var(--panel); }
+    .fihrist-baslik-satiri { display: flex; justify-content: space-between; font-family: var(--font-sans); font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.15em; font-weight: 700; color: var(--kirmizi); margin-bottom: 0.45rem; }
+    html[data-tema="gece"] .fihrist-baslik-satiri { color: var(--altin); }
+    .huy-filtreleri { display: flex; flex-wrap: wrap; gap: 0.1rem 0.55rem; }
+    .filtre-sekme { background: none; border: none; border-bottom: 2px solid transparent; color: var(--murekkep); font-family: var(--font-sans); font-size: 0.71rem; text-transform: uppercase; letter-spacing: 0.11em; padding: 0.25rem 0.1rem; min-height: 40px; cursor: pointer; opacity: 0.78; font-weight: 600; }
+    .filtre-sekme:hover, .filtre-sekme.aktif { opacity: 1; color: var(--kirmizi); }
+    .filtre-sekme.aktif { font-weight: 700; border-bottom-color: var(--kirmizi); }
+    html[data-tema="gece"] .filtre-sekme.aktif { color: var(--altin); border-bottom-color: var(--altin); }
+    .sonuc-sayaci-cubugu { padding: 0.48rem 1.15rem; background-color: var(--lacivert); color: #E9EFF0; border-bottom: 1px solid var(--altin); display: flex; justify-content: space-between; font-family: var(--font-sans); font-size: 0.66rem; letter-spacing: 0.15em; font-weight: 700; }
+    .sonuc-sayaci-cubugu span:last-child { color: var(--altin); }
+    .anlati-listesi { list-style: none; }
+    .anlati-satiri { border-bottom: 1px solid var(--cizgi); }
+    .anlati-satiri.hukum-satiri { border-top: 2px solid var(--kirmizi); background-color: var(--panel); }
+    .anlati-baglantisi { display: grid; grid-template-columns: 3.4rem 1fr auto; align-items: center; gap: 0.75rem; padding: 0.9rem 1.1rem; min-height: 72px; text-decoration: none; color: var(--murekkep); border-left: 4px solid transparent; }
+    .anlati-baglantisi:hover, .anlati-baglantisi[aria-current="page"] { background-color: var(--panel); border-left-color: var(--kirmizi); }
+    .satir-numara-kutusu { display: flex; flex-direction: column; align-items: center; border-right: 1px solid var(--cizgi); padding-right: 0.6rem; }
+    .satir-tamga { font-family: var(--font-sans); font-size: 0.62rem; font-weight: 700; color: var(--firuze); letter-spacing: 0.08em; }
+    .satir-numara { font-size: 1.35rem; font-weight: bold; line-height: 1.05; }
+    .anlati-baglantisi[aria-current="page"] .satir-numara { color: var(--kirmizi); }
+    .satir-bilgi { display: flex; flex-direction: column; gap: 0.22rem; }
+    .satir-baslik { font-size: 1.15rem; line-height: 1.2; }
+    .anlati-baglantisi[aria-current="page"] .satir-baslik { font-weight: bold; }
+    .satir-alt-meta { font-family: var(--font-sans); font-size: 0.66rem; text-transform: uppercase; letter-spacing: 0.13em; color: var(--firuze); font-weight: 700; }
+    .satir-okundu-isareti svg { width: 14px; height: 14px; display: block; }
+    .satir-okundu-isareti polygon { fill: transparent; stroke: var(--firuze); stroke-width: 1.5; }
+    .anlati-satiri.okundu .satir-okundu-isareti polygon { fill: var(--kirmizi); stroke: var(--kirmizi); }
+
+    /* ==========================================================================
+       BÖLÜM 7: SAĞ OKUMA PANELİ, KİLİM BORDÜRÜ VE ANLATI DETAYLARI
+       Açıklama: Kullanıcı bir hikaye seçtiğinde sağ tarafta açılan okuma sayfasıdır.
+       Hikayenin başlığı, özel çizim gravürü, arşiv fişi (kötü huy, bedel)
+       ve hikaye metni burada gösterilir.
+       ========================================================================== */
+    .okuma-sutunu { background-color: var(--panel); position: relative; display: grid; grid-template-columns: 42px 1fr; }
+    .ilerleme-cubugu-kapsayici { position: sticky; top: 0; grid-column: 1 / -1; width: 100%; height: 4px; background-color: var(--cizgi); z-index: 25; }
+    .ilerleme-cubugu { height: 100%; width: 0%; background-color: var(--kirmizi); }
+    .dikey-kilim-seridi { width: 42px; height: 100%; min-height: 100%; border-right: 2px solid var(--altin); background-color: var(--lacivert); display: flex; justify-content: center; overflow: hidden; }
+    .dikey-kilim-seridi svg { width: 32px; height: 100%; min-height: 100%; display: block; }
+    .okuma-icerigi-sarici { padding: 2.1rem 3rem 4rem 2.6rem; max-width: 940px; width: 100%; }
+    .mobil-ust-cubuk { display: none; }
+
+    .bos-defter { border: 2px solid var(--lacivert); outline: 1px solid var(--altin); outline-offset: -5px; background-color: var(--kagit); padding: 2rem; }
+    .bos-defter.gizli, .anlati-gorunumu { display: none; }
+    .anlati-gorunumu.aktif { display: block; }
+    .bos-defter-ust-damga { display: flex; justify-content: space-between; border-bottom: 2px solid var(--firuze); padding-bottom: 0.6rem; margin-bottom: 1.25rem; font-family: var(--font-sans); font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.15em; font-weight: 700; color: var(--kirmizi); }
+    html[data-tema="gece"] .bos-defter-ust-damga { color: var(--altin); }
+    .bos-defter-baslik { font-size: clamp(1.6rem, 2.8vw, 2.25rem); font-weight: normal; line-height: 1.18; margin-bottom: 0.85rem; }
+    .bos-defter-aciklama { font-size: 1.05rem; line-height: 1.68; margin-bottom: 1.5rem; max-width: 65ch; }
+
+    .bos-defter-matris { display: grid; grid-template-columns: repeat(4, 1fr); border-top: 2px solid var(--lacivert); border-left: 2px solid var(--lacivert); margin-bottom: 1.5rem; }
+    .matris-hucre { background: var(--panel); border-right: 2px solid var(--lacivert); border-bottom: 2px solid var(--lacivert); padding: 0.7rem; text-align: left; cursor: pointer; color: var(--murekkep); display: flex; flex-direction: column; justify-content: space-between; gap: 0.45rem; }
+    .matris-hucre:hover { background-color: var(--kagit); border-top: 3px solid var(--kirmizi); }
+    .matris-ust { display: flex; justify-content: space-between; width: 100%; }
+    .matris-no { font-family: var(--font-sans); font-size: 0.64rem; letter-spacing: 0.12em; color: var(--kirmizi); font-weight: 700; }
+    .matris-tur { font-family: var(--font-sans); font-size: 0.62rem; letter-spacing: 0.08em; color: var(--firuze); font-weight: 700; }
+    .matris-minyaturler { width: 100%; border: 1px solid var(--firuze); background-color: var(--kagit); padding: 0.25rem; }
+    .matris-minyaturler svg { width: 100%; height: 66px; display: block; }
+    .matris-huy { font-size: 1.06rem; font-weight: bold; }
+    .matris-isim { font-size: 0.84rem; font-style: italic; opacity: 0.88; }
+    .rastgele-bas-dugme, .gezinme-baglanti { background: var(--lacivert); border: 1px solid var(--altin); color: #F4F7F7; font-family: var(--font-sans); font-size: 0.73rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.14em; padding: 0 1.2rem; min-height: 44px; cursor: pointer; }
+    .rastgele-bas-dugme:hover, .gezinme-baglanti:hover:not(:disabled) { background-color: var(--kirmizi); border-color: var(--altin); }
+    .gezinme-baglanti:disabled { opacity: 0.35; cursor: default; }
+
+    .tezhip-alinlik { width: 100%; margin-bottom: 1rem; border: 1px solid var(--altin); background-color: var(--lacivert); padding: 0.4rem 0.85rem; display: flex; justify-content: space-between; align-items: center; }
+    .anlati-ust-meta { font-family: var(--font-sans); font-size: 0.73rem; text-transform: uppercase; letter-spacing: 0.15em; color: var(--altin); font-weight: 700; }
+    .anlati-serlevha { display: grid; grid-template-columns: 1fr 245px; gap: 1.75rem; align-items: center; margin-bottom: 1.5rem; padding-bottom: 1.25rem; border-bottom: 2px solid var(--firuze); }
+    .anlati-baslik { font-size: clamp(2.1rem, 4vw, 3.1rem); font-weight: normal; line-height: 1.05; margin-bottom: 0.75rem; }
+    .anlati-ozet { font-style: italic; font-size: 1.12rem; line-height: 1.55; opacity: 0.92; }
+    .anlati-sahne-gravuru { border: 2px solid var(--lacivert); outline: 1px solid var(--altin); outline-offset: -4px; background-color: var(--kagit); padding: 0.6rem; display: flex; flex-direction: column; align-items: center; gap: 0.35rem; }
+    .anlati-sahne-gravuru svg { width: 100%; height: 124px; display: block; }
+    .gravur-altyazi { font-family: var(--font-sans); font-size: 0.62rem; text-transform: uppercase; letter-spacing: 0.14em; font-weight: 700; color: var(--kirmizi); }
+    html[data-tema="gece"] .gravur-altyazi { color: var(--altin); }
+
+    .arsiv-fisi { display: grid; grid-template-columns: 0.95fr 1.1fr 1.75fr; border: 2px solid var(--lacivert); border-top: 4px solid var(--kirmizi); margin-bottom: 1.75rem; background-color: var(--kagit); }
+    .fis-hucre { padding: 0.85rem 1.1rem; border-right: 1px solid var(--cizgi); }
+    .fis-hucre:last-child { border-right: none; }
+    .fis-etiket { display: block; font-family: var(--font-sans); font-size: 0.66rem; text-transform: uppercase; letter-spacing: 0.15em; color: var(--firuze); margin-bottom: 0.3rem; font-weight: 700; }
+    .fis-deger { font-size: 1rem; line-height: 1.42; }
+    .fis-hucre:first-child .fis-deger { color: var(--kirmizi); font-weight: bold; font-size: 1.18rem; }
+    html[data-tema="gece"] .fis-hucre:first-child .fis-deger { color: var(--altin); }
+    .motif-ayirici { margin: 1.5rem 0 1.85rem; width: 100%; max-width: 62ch; }
+    .motif-ayirici svg { width: 100%; height: 22px; display: block; }
+
+    .anlati-govde { font-size: calc(1.22rem * var(--olcek)); line-height: 1.74; max-width: 62ch; counter-reset: paragraf-sayaci; }
+    .anlati-govde p { margin-bottom: 1.45rem; counter-increment: paragraf-sayaci; }
+    .anlati-govde p:not(:first-of-type)::before { content: "❖ " counter(paragraf-sayaci, upper-roman); font-family: var(--font-sans); font-size: 0.64rem; letter-spacing: 0.1em; color: var(--firuze); font-weight: 700; margin-right: 0.55rem; vertical-align: middle; }
+    .anlati-govde p:first-of-type::first-letter { float: left; font-size: calc(3.85rem * var(--olcek)); line-height: 0.86; padding: 0.35rem 0.6rem 0.25rem; margin: 0.15rem 0.75rem 0.1rem 0; color: var(--altin); background-color: var(--lacivert); border: 2px solid var(--kirmizi); }
+
+    .kapanis-hukum-blogu { margin-top: 2.25rem; padding: 1.15rem 1.35rem; border: 1px solid var(--firuze); border-left: 5px solid var(--kirmizi); background-color: var(--kagit); max-width: 62ch; }
+    .kapanis-etiket { display: block; font-family: var(--font-sans); font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.16em; color: var(--kirmizi); font-weight: 700; margin-bottom: 0.35rem; }
+    html[data-tema="gece"] .kapanis-etiket { color: var(--altin); }
+    .kapanis-cumlesi { font-size: calc(1.12rem * var(--olcek)); font-style: italic; line-height: 1.55; }
+    .anlati-alt-bilgi { margin-top: 2rem; padding-top: 1rem; border-top: 2px solid var(--firuze); max-width: 62ch; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; }
+    .kaynak-notu { font-family: var(--font-sans); font-size: 0.72rem; font-weight: 600; opacity: 0.88; }
+    .onceki-sonraki-nav { display: flex; gap: 0.65rem; }
+
+    /* ==========================================================================
+       BÖLÜM 8: ALT BİLGİ (FOOTER) VE MOBİL UYUMLULUK (RESPONSIVE TASARIM)
+       Açıklama: Sayfanın en altındaki kaynakça/proje künyesi ve telefon/tablet
+       ekranlarında iki sütunlu yapının tek sütuna geçmesini sağlayan kurallar.
+       ========================================================================== */
+    .alt-bilgi { border-top: 3px solid var(--altin); background-color: var(--lacivert); color: #E9EFF0; padding: 1.4rem 1.75rem 1.15rem; font-family: var(--font-sans); font-size: 0.74rem; line-height: 1.6; }
+    .alt-bilgi-izgara { display: grid; grid-template-columns: 2fr 1fr; gap: 2rem; padding-bottom: 1.15rem; }
+    .alt-bilgi-baslik { text-transform: uppercase; letter-spacing: 0.15em; font-size: 0.7rem; font-weight: 700; margin-bottom: 0.35rem; color: var(--altin); }
+    .alt-bilgi-metin { opacity: 0.9; max-width: 75ch; }
+    .kapanis-kilim-seridi { width: 100%; overflow: hidden; padding-top: 0.75rem; border-top: 1px solid var(--firuze); }
+    .kapanis-kilim-seridi svg { width: 100%; height: 22px; display: block; }
+
+    @media (max-width: 960px) {
+      .sayfa-kapsayici { padding: 0.4rem; }
+      .masthead-govde, .okuma-odasi, .anlati-serlevha, .arsiv-fisi, .alt-bilgi-izgara { grid-template-columns: 1fr; }
+      .masthead-sol { border-right: none; border-bottom: 2px solid var(--altin); padding: 1.35rem 1rem; }
+      .arsiv-sutunu { position: static; max-height: none; border-right: none; }
+      .okuma-sutunu, .dikey-kilim-seridi, body.mobil-okuma-acik .arsiv-sutunu { display: none; }
+      body.mobil-okuma-acik .okuma-sutunu { display: block; min-height: 100dvh; }
+      .okuma-icerigi-sarici { padding: 1rem 1rem 2.5rem; }
+      .mobil-ust-cubuk { display: flex; justify-content: space-between; align-items: center; gap: 0.75rem; padding: 0.65rem 0; margin-bottom: 1.25rem; border-bottom: 2px solid var(--firuze); position: sticky; top: 4px; background-color: var(--panel); z-index: 15; }
+      .deftere-don-dugme { background: var(--lacivert); border: 1px solid var(--altin); color: #F4F7F7; font-family: var(--font-sans); font-size: 0.72rem; font-weight: 700; min-height: 44px; padding: 0 0.85rem; cursor: pointer; }
+      .mobil-cubuk-baslik { font-size: 0.95rem; font-style: italic; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+      .fis-hucre { border-right: none; border-bottom: 1px solid var(--cizgi); }
+      .bos-defter-matris { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 420px) { .bos-defter-matris { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+  <!-- ==========================================================================
+       ARKA PLAN: SEKİZ KÖŞELİ SELÇUKLU YILDIZI DESENİ (SVG)
+       Açıklama: Dışarıdan resim yüklemeden, sayfanın zeminine SVG ile
+       geometrik 8 köşeli Selçuklu kündekâri motifi çiziyoruz.
+       ========================================================================== -->
+  <svg class="selcuklu-arka-plan" aria-hidden="true">
+    <defs>
+      <pattern id="selcuklu-yildiz-deseni" width="72" height="72" patternUnits="userSpaceOnUse">
+        <rect x="14" y="14" width="44" height="44" fill="none" stroke="#1D7885" stroke-width="1"/>
+        <polygon points="36,7 65,36 36,65 7,36" fill="none" stroke="#C89D42" stroke-width="1"/>
+        <polygon points="36,20 52,36 36,52 20,36" fill="none" stroke="#A62620" stroke-width="1"/>
+        <circle cx="36" cy="36" r="3" fill="#C89D42"/>
+        <path d="M0,36 H7 M65,36 H72 M36,0 V7 M36,65 V72" stroke="#1D7885" stroke-width="1"/>
+      </pattern>
+    </defs>
+    <rect width="100%" height="100%" fill="url(#selcuklu-yildiz-deseni)"/>
+  </svg>
+
+  <div class="sayfa-kapsayici">
+    <div class="forma-cercevesi">
+      <header class="masthead">
+        <div class="tamga-kusagi" style="display: flex; justify-content: flex-start; text-align: left; width: 100%;">
+          <div style="margin-right: auto; margin-left: 0; text-align: left;">TÜRK MASAL GELENEĞİ · ANADOLU MASALLARI VE NEFİS DEFTERİ</div>
+        </div>
+        <!-- Üst Kökboya Kilim Bordürü (Geleneksel Türk dokuma motifi) -->
+        <div class="ust-kilim-kusagi" aria-hidden="true">
+          <svg viewBox="0 0 1200 24" preserveAspectRatio="none" fill="none">
+            <defs>
+              <pattern id="ust-kilim-deseni" width="60" height="24" patternUnits="userSpaceOnUse">
+                <polygon points="15,2 28,12 15,22 2,12" fill="#12263A" stroke="#C89D42" stroke-width="1.3"/>
+                <polygon points="15,7 21,12 15,17 9,12" fill="#1D7885"/>
+                <path d="M34,6 L45,12 L56,6 M34,18 L45,12 L56,18" stroke="#C89D42" stroke-width="1.6"/>
+                <circle cx="45" cy="12" r="2.5" fill="#F4F7F7"/>
+              </pattern>
+            </defs>
+            <rect width="1200" height="24" fill="url(#ust-kilim-deseni)"/>
+          </svg>
+        </div>
+
+        <div class="masthead-govde">
+          <div class="masthead-sol">
+            <div>
+              <div class="forma-damgasi">❖ ANADOLU VE TÜRK MASALLARI ARŞİVİ ❖</div>
+              <h1 class="masthead-baslik">Yedi Baş</h1>
+              <p class="masthead-kunye">Türk masallarında yedi kötü huy ve bir hüküm.</p>
+            </div>
+            <p class="masthead-tez-notu">
+              Türk masallarındaki yedi başlı ejderha (Evren), bu seçkide klasik Anadolu masallarıyla insan nefsinin yedi karanlık huyunu simgeler: <strong>Kibir, Tamah, Haset, Gazap, Zulüm, İftira, Vefasızlık</strong> ve hepsinin hesabını kesen <strong>Hüküm</strong>.
+            </p>
+          </div>
+
+          <!-- SAĞ TARAF: ETKİLEŞİMLİ YEDİ BAŞLI EJDERHA (EVREN) ARMASI (Tıklanabilir 7 Baş) -->
+          <div class="masthead-sag-gravur">
+            <div class="gravur-ust-etiket">
+              <span>LEVHA I · SELÇUKLU YEDİ BAŞLI EVREN (EJDERHA) ARMASI</span>
+              <span>BAŞLARA TIKLAYARAK AÇINIZ</span>
+            </div>
+            <div class="ejderha-gravur-kapsayici">
+              <svg viewBox="0 0 560 172" fill="none" role="img" aria-label="Yedi Başlı Ejderha Selçuklu Çini Gravürü">
+                <rect x="2" y="2" width="556" height="168" stroke="#C89D42" stroke-width="1.6"/>
+                <rect x="6" y="6" width="548" height="160" stroke="#1D7885" stroke-width="1" stroke-dasharray="6 3"/>
+                <polygon points="6,6 20,6 6,20" fill="#A62620"/><polygon points="554,6 540,6 554,20" fill="#A62620"/>
+                <polygon points="6,166 20,166 6,152" fill="#A62620"/><polygon points="554,166 540,166 554,152" fill="#A62620"/>
+                <!-- Zemin Çizgisi -->
+                <path d="M18 160 Q40 156 66 160 T118 160 T170 160 T222 160 T274 160 T326 160 T378 160 T430 160 T482 160 T542 160" stroke="#1D7885" stroke-width="1" opacity="0.4"/>
+
+                <!-- Zarif Kıvrımlı Selçuklu Ejderha Kuyrukları -->
+                <path d="M22 138 C16 126 28 118 38 124 C48 130 46 142 36 148 C28 152 20 146 24 136" stroke="#1D7885" stroke-width="2.6" fill="none"/>
+                <circle cx="24" cy="136" r="2" fill="#C89D42"/>
+
+                <path d="M538 138 C544 126 532 118 522 124 C512 130 514 142 524 148 C532 152 540 146 536 136" stroke="#1D7885" stroke-width="2.6" fill="none"/>
+                <circle cx="536" cy="136" r="2" fill="#C89D42"/>
+
+                <!-- Zarif Serpentine Ejderha Gövdesi -->
+                <path d="M38 144 C110 118 170 144 235 128 C265 120 295 120 325 128 C390 144 450 118 522 144" stroke="#1D7885" stroke-width="3.6" fill="none"/>
+                <path d="M38 144 C110 118 170 144 235 128 C265 120 295 120 325 128 C390 144 450 118 522 144" stroke="#C89D42" stroke-width="1.2" stroke-dasharray="3 3" fill="none"/>
+
+                <!-- Gövde Düğümü (Zarif Sekiz Köşeli Yıldız) -->
+                <polygon points="280,108 290,118 280,128 270,118" fill="#A62620" stroke="#C89D42" stroke-width="1.3"/>
+                <circle cx="280" cy="118" r="2.5" fill="#C89D42"/>
+
+                <!-- 7 Adet Zarif Kıvrımlı Boyun Çizgisi -->
+                <path d="M54 60 C42 85 40 113 58 138" stroke="#C89D42" stroke-width="1.6" fill="none"/>
+                <circle cx="48" cy="88" r="1.3" fill="#C89D42"/><circle cx="45" cy="104" r="1.3" fill="#C89D42"/>
+
+                <path d="M128 56 C116 81 114 107 130 136" stroke="#C89D42" stroke-width="1.6" fill="none"/>
+                <circle cx="121" cy="85" r="1.3" fill="#C89D42"/><circle cx="119" cy="101" r="1.3" fill="#C89D42"/>
+
+                <path d="M204 53 C196 77 196 103 208 132" stroke="#C89D42" stroke-width="1.6" fill="none"/>
+                <circle cx="199" cy="82" r="1.3" fill="#C89D42"/><circle cx="200" cy="98" r="1.3" fill="#C89D42"/>
+
+                <path d="M280 50 V108" stroke="#A62620" stroke-width="2.2" fill="none"/>
+                <path d="M280 50 V108" stroke="#C89D42" stroke-width="1" stroke-dasharray="2 2" fill="none"/>
+
+                <path d="M356 53 C364 77 364 103 352 132" stroke="#C89D42" stroke-width="1.6" fill="none"/>
+                <circle cx="361" cy="82" r="1.3" fill="#C89D42"/><circle cx="360" cy="98" r="1.3" fill="#C89D42"/>
+
+                <path d="M432 56 C444 81 446 107 430 136" stroke="#C89D42" stroke-width="1.6" fill="none"/>
+                <circle cx="439" cy="85" r="1.3" fill="#C89D42"/><circle cx="441" cy="101" r="1.3" fill="#C89D42"/>
+
+                <path d="M506 60 C518 85 520 113 502 138" stroke="#C89D42" stroke-width="1.6" fill="none"/>
+                <circle cx="512" cy="88" r="1.3" fill="#C89D42"/><circle cx="515" cy="104" r="1.3" fill="#C89D42"/>
+                <!-- JavaScript fonksiyonu (ejderhaVeMuhurleriGuncelle) 7 başı buraya otomatik çizer -->
+                <g id="ejderha-baslar-katmani"></g>
+              </svg>
+            </div>
+            <div class="gravur-alt-not">“Yedi başlı ejderhanın her bir başı nefsin bir tuzağıdır; aklı ve vefayı kuşanan başları birer birer keser...” — Türk Masal Geleneği</div>
+          </div>
+        </div>
+
+        <div class="bas-seridi">
+          <div class="yedi-bas-gostergesi" role="region" aria-label="Yedi Baş Okuma Göstergesi">
+            <span class="gosterge-etiket">YEDİ BAŞ MÜHRÜ:</span>
+            <div class="elmas-dizisi" id="ust-elmas-dizisi"></div>
+            <span class="bas-sayac-metni" id="bas-sayac-metni" aria-live="polite">0/7 BAŞ KESİLDİ</span>
+          </div>
+          <div class="okuma-araclari" role="group" aria-label="Okuma görünümü ayarları">
+            <button type="button" class="arac-dugme" id="btn-yazi-kucult" aria-label="Yazı boyutunu küçült">A−</button>
+            <button type="button" class="arac-dugme" id="btn-yazi-buyut" aria-label="Yazı boyutunu büyüt">A+</button>
+            <button type="button" class="arac-dugme" id="btn-tema" aria-pressed="false" aria-label="Gece veya gündüz temasını değiştir">GECE</button>
+          </div>
+        </div>
+      </header>
+
+      <!-- ==========================================================================
+           İKİ SÜTUNLU OKUMA ODASI
+           Sol sütun: Fihrist ve Kötü Huy Filtreleri (aside.arsiv-sutunu)
+           Sağ sütun: Kitap Kapağı veya Seçilen Hikayenin Okuma Metni (main.okuma-sutunu)
+           ========================================================================== -->
+      <div class="okuma-odasi">
+        <aside class="arsiv-sutunu" aria-label="Anlatı Fihristi ve Huy Süzgeci">
+          <div class="arsiv-ust-bolum">
+            <div class="fihrist-baslik-satiri">
+              <span>❖ YEDİ KÖTÜ HUY VE HÜKÜM SÜZGECİ</span>
+              <span>↑/↓ · J/K</span>
+            </div>
+            <nav class="huy-filtreleri" id="huy-filtreleri" aria-label="Kötü huya göre süz">
+              <button type="button" class="filtre-sekme aktif" data-huy="Tümü">Tümü</button>
+              <button type="button" class="filtre-sekme" data-huy="Kibir">Kibir</button>
+              <button type="button" class="filtre-sekme" data-huy="Tamah">Tamah</button>
+              <button type="button" class="filtre-sekme" data-huy="Haset">Haset</button>
+              <button type="button" class="filtre-sekme" data-huy="Gazap">Gazap</button>
+              <button type="button" class="filtre-sekme" data-huy="Zulüm">Zulüm</button>
+              <button type="button" class="filtre-sekme" data-huy="İftira">İftira</button>
+              <button type="button" class="filtre-sekme" data-huy="Vefasızlık">Vefasızlık</button>
+              <button type="button" class="filtre-sekme" data-huy="Hüküm">Hüküm</button>
+            </nav>
+          </div>
+          <div class="sonuc-sayaci-cubugu">
+            <span id="sonuc-sayaci" aria-live="polite">8 MASAL KAYITLI</span>
+            <span>FİHRİST 01–08</span>
+          </div>
+          <ol class="anlati-listesi" id="anlati-listesi"></ol>
+        </aside>
+
+        <main class="okuma-sutunu" id="okuma-sutunu">
+          <div class="ilerleme-cubugu-kapsayici" aria-hidden="true">
+            <div class="ilerleme-cubugu" id="ilerleme-cubugu"></div>
+          </div>
+          <div class="dikey-kilim-seridi" aria-hidden="true">
+            <svg width="32" height="100%" fill="none" style="width:32px; height:100%; display:block;">
+              <defs>
+                <pattern id="dikey-kilim-deseni" width="32" height="64" patternUnits="userSpaceOnUse">
+                  <polygon points="16,4 28,16 16,28 4,16" fill="#A62620" stroke="#C89D42" stroke-width="1.3"/>
+                  <polygon points="16,10 22,16 16,22 10,16" fill="#1D7885"/>
+                  <circle cx="16" cy="16" r="2" fill="#F4F7F7"/>
+                  <line x1="4" y1="32" x2="28" y2="32" stroke="#C89D42" stroke-width="1"/>
+                  <polygon points="16,36 28,48 16,60 4,48" fill="#1D7885" stroke="#C89D42" stroke-width="1.3"/>
+                  <path d="M10,45 L16,41 L22,45 M10,51 L16,55 L22,51" stroke="#F4F7F7" stroke-width="1.3"/>
+                  <line x1="4" y1="64" x2="28" y2="64" stroke="#C89D42" stroke-width="1"/>
+                </pattern>
+              </defs>
+              <rect width="32" height="100%" fill="url(#dikey-kilim-deseni)"/>
+            </svg>
+          </div>
+
+          <div class="okuma-icerigi-sarici">
+            <div class="mobil-ust-cubuk" id="mobil-ust-cubuk">
+              <button type="button" class="deftere-don-dugme" id="btn-deftere-don">← DEFTERE DÖN</button>
+              <span class="mobil-cubuk-baslik" id="mobil-cubuk-baslik">Yedi Baş</span>
+            </div>
+
+            <!-- 1. GÖRÜNÜM: AÇILIŞ KİTAP KAPAĞI (Kullanıcı henüz bir hikaye seçmediğinde açılır) -->
+            <section class="bos-defter" id="bos-defter" aria-labelledby="bos-defter-baslik">
+              <div class="bos-defter-ust-damga">
+                <span>❖ OKUMA ODASI · SELÇUKLU VE ANADOLU MOTİFLİ KATALOG KAPAĞI</span>
+                <span>SEKİZ LEVHA</span>
+              </div>
+              <h2 class="bos-defter-baslik" id="bos-defter-baslik">Soldaki fihristten veya aşağıdaki sekiz levhadan bir baş seçin.</h2>
+              <p class="bos-defter-aciklama">
+                Bu seçki rastgele bir “en güzel masallar” derlemesi değildir. Her anlatıda nefsin bir <strong>kötü huyu</strong> somut bir sahneyle (köprü, bakır kepçe, sahte kanlı gömlek, kör ok, tek göz, kuyu, tuzsuz aş) görünür ve sahibine bedelini ödetir. Yedi anlatı ejderhanın yedi başını keser; sekizinci masalda ise gösterişin ve altının değil, asıl hayat veren sade hakikatin hükmüne (Tuz Kadar Sevmek masalına) varılır.
+              </p>
+              <div class="bos-defter-matris" id="bos-defter-matris" role="group" aria-label="Sekiz Anlatı Taş Baskı Seçim Matrisi"></div>
+              <button type="button" class="rastgele-bas-dugme" id="btn-rastgele-anlati">❖ RASTGELE BİR BAŞ AÇ →</button>
+            </section>
+
+            <!-- 2. GÖRÜNÜM: SEÇİLEN HİKÂYENİN OKUMA PANELİ (Fihristten veya ejderhadan tıklandığında görünür) -->
+            <article class="anlati-gorunumu" id="anlati-gorunumu" aria-live="polite">
+              <div class="tezhip-alinlik">
+                <span class="anlati-ust-meta" id="anlati-ust-meta">BAŞ 01 · MASAL · 01/08</span>
+              </div>
+              <div class="anlati-serlevha">
+                <div>
+                  <h2 class="anlati-baslik" id="anlati-baslik">Kibirli Padişah Kızı</h2>
+                  <p class="anlati-ozet" id="anlati-ozet"></p>
+                </div>
+                <div class="anlati-sahne-gravuru" aria-hidden="true">
+                  <div id="anlati-ozel-svg" style="width:100%;"></div>
+                  <span class="gravur-altyazi" id="gravur-altyazi">LEVHA 01 · KİBİR</span>
+                </div>
+              </div>
+              <div class="arsiv-fisi" role="region" aria-label="Anlatı Arşiv Fişi">
+                <div class="fis-hucre"><span class="fis-etiket">KÖTÜ HUY</span><div class="fis-deger" id="fis-huy"></div></div>
+                <div class="fis-hucre"><span class="fis-etiket">KİM YAPIYOR</span><div class="fis-deger" id="fis-kim"></div></div>
+                <div class="fis-hucre"><span class="fis-etiket">BEDELİ</span><div class="fis-deger" id="fis-bedel"></div></div>
+              </div>
+              <div class="motif-ayirici" aria-hidden="true">
+                <svg viewBox="0 0 420 22" fill="none">
+                  <line x1="0" y1="11" x2="135" y2="11" stroke="#1D7885" stroke-width="1.5"/>
+                  <polygon points="150,11 162,3 174,11 162,19" fill="#1D7885" stroke="#C89D42" stroke-width="1.2"/>
+                  <polygon points="182,11 194,3 206,11 194,19" fill="#A62620" stroke="#C89D42" stroke-width="1.2"/>
+                  <polygon points="210,1 215,8 223,11 215,14 210,21 205,14 197,11 205,8" fill="#C89D42"/>
+                  <polygon points="214,11 226,3 238,11 226,19" fill="#A62620" stroke="#C89D42" stroke-width="1.2"/>
+                  <polygon points="246,11 258,3 270,11 258,19" fill="#1D7885" stroke="#C89D42" stroke-width="1.2"/>
+                  <line x1="285" y1="11" x2="420" y2="11" stroke="#1D7885" stroke-width="1.5"/>
+                </svg>
+              </div>
+              <div class="anlati-govde" id="anlati-govde"></div>
+              <aside class="kapanis-hukum-blogu" aria-label="Anlatının Hükmü">
+                <span class="kapanis-etiket">❖ ANLATININ HÜKMÜ</span>
+                <p class="kapanis-cumlesi" id="anlati-kapanis"></p>
+              </aside>
+              <footer class="anlati-alt-bilgi">
+                <span class="kaynak-notu" id="anlati-kaynak"></span>
+                <div class="onceki-sonraki-nav">
+                  <button type="button" class="gezinme-baglanti" id="btn-onceki-anlati">← ÖNCEKİ BAŞ</button>
+                  <button type="button" class="gezinme-baglanti" id="btn-sonraki-anlati">SONRAKİ BAŞ →</button>
+                </div>
+              </footer>
+            </article>
+          </div>
+        </main>
+      </div>
+
+      <!-- ==========================================================================
+           ALT BİLGİ (FOOTER): KAYNAKÇA, AKADEMİK KÜNYE VE ALT KİLİM BORDÜRÜ
+           ========================================================================== -->
+      <footer class="alt-bilgi">
+        <div class="alt-bilgi-izgara">
+          <div>
+            <h3 class="alt-bilgi-baslik">❖ KAYNAKÇA VE METİN NOTU</h3>
+            <p class="alt-bilgi-metin">
+              Bu derlemedeki sekiz masal; Pertev Naili Boratav’ın <em>Zaman Zaman İçinde</em> ve <em>Az Gittik Uz Gittik</em> külliyatı, Tahir Alangu’nun <em>Billur Köşk Masalları</em> ve kadim Anadolu Türk masal geleneği temel alınarak özgün yeniden anlatımla kaleme alınmıştır. Kötü huy tasnifi klasik ahlak geleneğinden (Kınalızâde Ali Çelebi, <em>Ahlâk-ı Alâ’î</em>), yedi başlı ejderha imgesi Türk masallarındaki Evren motifinden uyarlanmıştır.
+            </p>
+          </div>
+          <div>
+            <h3 class="alt-bilgi-baslik">❖ DERS VE PROJE KÜNYESİ</h3>
+            <p class="alt-bilgi-metin">
+              Medipol Üniversitesi · Görsel İletişim Tasarımı · Programlamaya Giriş Vize Ödevi (2026).<br>
+              Selçuklu kündekâri/çini geometrisi, Anadolu kilim motifleri ve %100 yerleşik sistem tipografisi.
+            </p>
+          </div>
+        </div>
+        <div class="kapanis-kilim-seridi" aria-hidden="true">
+          <svg viewBox="0 0 1200 22" preserveAspectRatio="none" fill="none">
+            <defs>
+              <pattern id="yatay-kilim" width="48" height="22" patternUnits="userSpaceOnUse">
+                <polygon points="12,2 24,11 12,20 0,11" fill="#A62620" stroke="#C89D42" stroke-width="1.2"/>
+                <polygon points="36,2 48,11 36,20 24,11" fill="#1D7885" stroke="#C89D42" stroke-width="1.2"/>
+                <circle cx="12" cy="11" r="2.2" fill="#C89D42"/><circle cx="36" cy="11" r="2.2" fill="#F4F7F7"/>
+              </pattern>
+            </defs>
+            <rect width="1200" height="22" fill="url(#yatay-kilim)"/>
+          </svg>
+        </div>
+      </footer>
+    </div>
+  </div>
+
+  <script>
+    /* ==========================================================================
+       JAVASCRIPT BÖLÜM 1: SEKİZ ANLATININ ÇİZİM GRAVÜRLERİ (SVG KODLARI)
+       Açıklama: Her hikayenin kendine ait sembolik çizimini (köprü, kepçe,
+       sahte kanlı gömlek, yay, kuyu vb.) dışarıdan resim yüklemeden
+       doğrudan SVG vektör çizim kodu olarak burada saklıyoruz.
+       ========================================================================== */
+    const SAHNE_GRAVURLERI = {
+      "1-kibir": "<svg viewBox='0 0 200 110' fill='none'><rect x='2' y='2' width='196' height='106' stroke='#12263A' stroke-width='1.5'/><rect x='6' y='6' width='188' height='98' stroke='#C89D42' stroke-width='1'/><polygon points='6,6 16,6 6,16' fill='#A62620'/><polygon points='194,6 184,6 194,16' fill='#A62620'/><path d='M14 88 Q100 32 186 88' stroke='#12263A' stroke-width='2.6'/><path d='M14 96 Q100 42 186 96' stroke='#1D7885' stroke-width='1.8'/><line x1='55' y1='68' x2='55' y2='95' stroke='#12263A' stroke-width='1.6'/><line x1='100' y1='59' x2='100' y2='95' stroke='#12263A' stroke-width='1.8'/><line x1='145' y1='68' x2='145' y2='95' stroke='#12263A' stroke-width='1.6'/><path d='M48 30 L100 12 L152 30 L100 22 Z' fill='#A62620'/><circle cx='100' cy='40' r='5.5' fill='#C89D42' stroke='#12263A' stroke-width='1.4'/><line x1='76' y1='48' x2='124' y2='28' stroke='#1D7885' stroke-width='1.6'/><line x1='124' y1='48' x2='76' y2='28' stroke='#1D7885' stroke-width='1.6'/></svg>",
+      "2-tamah": "<svg viewBox='0 0 200 110' fill='none'><rect x='2' y='2' width='196' height='106' stroke='#12263A' stroke-width='1.5'/><rect x='6' y='6' width='188' height='98' stroke='#C89D42' stroke-width='1'/><polygon points='6,6 16,6 6,16' fill='#1D7885'/><polygon points='194,6 184,6 194,16' fill='#1D7885'/><path d='M26 64 A26 26 0 0 0 78 64 Z' fill='#A62620' stroke='#12263A' stroke-width='1.5'/><line x1='76' y1='64' x2='148' y2='22' stroke='#12263A' stroke-width='2.6'/><circle cx='42' cy='46' r='5.5' fill='#C89D42' stroke='#12263A' stroke-width='1.2'/><circle cx='58' cy='40' r='5.5' fill='#C89D42' stroke='#12263A' stroke-width='1.2'/><circle cx='74' cy='46' r='5.5' fill='#C89D42' stroke='#12263A' stroke-width='1.2'/><path d='M122 86 C132 56, 162 56, 172 86 Z' fill='#1D7885' stroke='#12263A' stroke-width='1.5'/><line x1='132' y1='68' x2='162' y2='68' stroke='#C89D42' stroke-width='2'/><path d='M14 94 Q55 86 100 94 T186 94' stroke='#1D7885' stroke-width='1.8'/></svg>",
+      "3-haset": "<svg viewBox='0 0 200 110' fill='none'><rect x='2' y='2' width='196' height='106' stroke='#12263A' stroke-width='1.5'/><rect x='6' y='6' width='188' height='98' stroke='#C89D42' stroke-width='1'/><polygon points='6,6 16,6 6,16' fill='#A62620'/><polygon points='194,6 184,6 194,16' fill='#A62620'/><path d='M44 24 L66 16 L82 28 L100 18 L118 28 L134 16 L156 24 L144 46 L128 40 V88 H72 V40 L56 46 Z' stroke='#12263A' stroke-width='1.7'/><polygon points='88,48 104,38 100,58 112,68 90,74 84,58' fill='#A62620'/><circle cx='158' cy='72' r='13' stroke='#C89D42' stroke-width='2.4'/><line x1='24' y1='84' x2='176' y2='24' stroke='#1D7885' stroke-width='2'/><polygon points='176,24 164,24 170,33' fill='#A62620'/></svg>",
+      "4-gazap": "<svg viewBox='0 0 200 110' fill='none'><rect x='2' y='2' width='196' height='106' stroke='#12263A' stroke-width='1.5'/><rect x='6' y='6' width='188' height='98' stroke='#C89D42' stroke-width='1'/><polygon points='6,6 16,6 6,16' fill='#1D7885'/><polygon points='194,6 184,6 194,16' fill='#1D7885'/><path d='M52 14 C118 28, 118 82, 52 96' stroke='#12263A' stroke-width='2.8'/><line x1='52' y1='14' x2='52' y2='96' stroke='#C89D42' stroke-width='1.4'/><line x1='26' y1='55' x2='166' y2='55' stroke='#A62620' stroke-width='2.4'/><polygon points='172,55 156,47 156,63' fill='#A62620'/><path d='M12 96 L42 62 L72 96 L108 58 L146 96' stroke='#1D7885' stroke-width='1.6'/><circle cx='146' cy='72' r='3.5' fill='#A62620'/><circle cx='156' cy='78' r='3' fill='#A62620'/></svg>",
+      "5-zulum": "<svg viewBox='0 0 200 110' fill='none'><rect x='2' y='2' width='196' height='106' stroke='#12263A' stroke-width='1.5'/><rect x='6' y='6' width='188' height='98' stroke='#C89D42' stroke-width='1'/><polygon points='6,6 16,6 6,16' fill='#A62620'/><polygon points='194,6 184,6 194,16' fill='#A62620'/><path d='M16 96 L56 16 L100 34 L144 16 L184 96' stroke='#12263A' stroke-width='2'/><path d='M58 58 Q100 30 142 58 Q100 86 58 58 Z' fill='#1D7885' stroke='#12263A' stroke-width='1.8'/><circle cx='100' cy='58' r='11' fill='#A62620'/><circle cx='100' cy='58' r='4' fill='#C89D42'/><line x1='100' y1='10' x2='100' y2='96' stroke='#C89D42' stroke-width='2.5'/></svg>",
+      "6-iftira": "<svg viewBox='0 0 200 110' fill='none'><rect x='2' y='2' width='196' height='106' stroke='#12263A' stroke-width='1.5'/><rect x='6' y='6' width='188' height='98' stroke='#C89D42' stroke-width='1'/><polygon points='6,6 16,6 6,16' fill='#1D7885'/><polygon points='194,6 184,6 194,16' fill='#1D7885'/><path d='M12 94 L72 24 L124 76 L154 38 L188 94 Z' stroke='#12263A' stroke-width='1.8'/><polygon points='72,24 54,45 90,45' fill='#1D7885'/><path d='M116 32 Q126 20 136 32 Q146 20 156 32' stroke='#A62620' stroke-width='1.8'/><path d='M138 20 Q148 10 158 20 Q168 10 178 20' stroke='#A62620' stroke-width='1.8'/><circle cx='36' cy='30' r='8' fill='#C89D42'/></svg>",
+      "7-vefasizlik": "<svg viewBox='0 0 200 110' fill='none'><rect x='2' y='2' width='196' height='106' stroke='#12263A' stroke-width='1.5'/><rect x='6' y='6' width='188' height='98' stroke='#C89D42' stroke-width='1'/><polygon points='6,6 16,6 6,16' fill='#A62620'/><polygon points='194,6 184,6 194,16' fill='#A62620'/><line x1='38' y1='8' x2='38' y2='102' stroke='#1D7885' stroke-width='2'/><line x1='162' y1='8' x2='162' y2='102' stroke='#1D7885' stroke-width='2'/><path d='M62 86 C62 60, 138 68, 138 42 C138 24, 100 28, 100 16' stroke='#A62620' stroke-width='3.5'/><polygon points='100,8 112,20 88,20' fill='#C89D42' stroke='#12263A' stroke-width='1'/><circle cx='100' cy='54' r='4' fill='#1D7885'/><circle cx='100' cy='74' r='4' fill='#C89D42'/></svg>",
+      "hukum": "<svg viewBox='0 0 200 110' fill='none'><rect x='2' y='2' width='196' height='106' stroke='#12263A' stroke-width='1.5'/><rect x='6' y='6' width='188' height='98' stroke='#C89D42' stroke-width='1'/><polygon points='6,6 16,6 6,16' fill='#1D7885'/><polygon points='194,6 184,6 194,16' fill='#1D7885'/><line x1='100' y1='14' x2='100' y2='92' stroke='#12263A' stroke-width='2.4'/><line x1='74' y1='92' x2='126' y2='92' stroke='#12263A' stroke-width='2.4'/><line x1='44' y1='34' x2='156' y2='34' stroke='#C89D42' stroke-width='2.2'/><polygon points='44,34 28,66 60,66' fill='#1D7885' stroke='#12263A' stroke-width='1.4'/><polygon points='156,34 140,66 172,66' fill='#A62620' stroke='#12263A' stroke-width='1.4'/><circle cx='156' cy='56' r='6' fill='#C89D42'/></svg>"
+    };
+
+    /* ==========================================================================
+       JAVASCRIPT BÖLÜM 2: SEKİZ ANLATI VERİ LİSTESİ (ANLATILAR DİZİSİ)
+       Açıklama: Sitedeki tüm hikayeler birer JavaScript nesnesi (object)
+       olarak bu dizide (array) toplanmıştır.
+       Her hikayenin; başlığı, kötü huyu, bedeli, özeti, kapanış hüküm cümlesi,
+       kaynakçası ve okuma paragrafları tek tek burada tanımlanır.
+       ========================================================================== */
+    const ANLATILAR = [
+      {
+        id: "1-kibir", sira: "01", romen: "I", baslik: "Kibirli Padişah Kızı", tur: "Masal", huy: "Kibir", kim: "Padişahın Mağrur Kızı",
+        bedel: "Gelen bütün talipleriyle alay edip burnu Kaf Dağı'nda gezer; sonunda bir çömlekçiye muhtaç olup kibrinin bedelini öder.",
+        ozet: "Kendi güzelliğini ve soyunu cihanın üstünde görüp kapısına gelen hükümdarları hor gören kibirli padişah kızı, kaderin cilvesiyle bir çömlekçi kulübesinde sınanarak tevazuya erer.",
+        kapanis: "Kibir, sırça köşkte taht kurdursa da; en sonunda insanı çamurdan bir çanağın başında diz çöktürür.",
+        kaynak: "Türk Masal Külliyatı (Tahir Alangu, Billur Köşk Masalları / Eberhard-Boratav Tip 900)",
+        paragraflar: [
+          "Evvel zaman içinde, kalbur saman içinde, develer tellal iken, pireler berber iken; memleketin birinde aklı kıt, kibri dağlardan yüce bir padişah kızı yaşarmış. Kız öyle güzelmiş ki görenlerin aklı başından gider, cemalini gören mecnun olurmuş. Lakin aynaya her baktığında 'Şu koca dünyada bana layık ne bir şehzade var ne de bir padişah' diyerek burnunu Kaf Dağı’na diker, yanına yaklaşan herkesi bir kusur bularak hor görürmüş.",
+          "Günün birinde padişah kızına talip olan cümle diyarın şehzadeleri, beyleri ve vezir oğulları için sarayın avlusunda büyük bir meclis kurmuş. Gelen talipler al atlas kaftanlarla sıraya dizilmiş. Kibirli kız kibirle yanlarından geçerken kimine 'Bunun boynu kaz boynu gibi uzun', kimine 'Bunun burnu karga gagası gibi eğri', kimine de 'Bunun yüzü kül çanağı gibi soluk' diyerek cümle cihanı alaya almış. En sonunda tatlı dilli, yağız bir hükümdar oğluna da sakalı sivri diye 'Gaga Sakallı Bey' lakabını takıp kahkahalarla aşağılamış.",
+          "Kızının bu hadsiz kibri karşısında padişahın canına tak etmiş. Divanın ortasında gürleyip, 'Mademki kapıma gelen asil talipleri beğenmezsin, andım olsun seni sarayımın kapısına ilk gelen dilenciye veya esnafa eş edeceğim!' diye ferman buyurmuş. Çok geçmeden saray kapısına sırtında küfesiyle topraktan çanak çömlek satan yırtık cübbeli yoksul bir çömlekçi çıkagelmiş. Padişah sözünden dönmemiş; ağlayıp dövünen kibirli kızını bu yoksul çömlekçiye nikahlayıp saraydan dışarı attırmış.",
+          "Kibirli sultan, çömlekçinin dumanlı, saz çatılı virane kulübesine varınca gözlerine inanamamış. İpek döşekler yerine kuru hasır, altın tabaklar yerine kara çamurdan kaplar varmış. Kocası ona ekmek parası için çamur yoğurmayı, iğ eğirmeyi ve çarşıda testi satmayı buyurmuş. Sırça sarayın nazlı kızı pazarda çömlek satarken, yoldan geçen atlıların atları çömleklerine çarpıp hepsini tuzla buz etmiş. Çamurlar içinde ağlayan kız, vaktiyle hor gördüğü o insanların rızkının ne zor kazanıldığını, bir lokma ekmeğin kıymetini iliklerine kadar hissetmiş.",
+          "Bir gün sarayda büyük bir düğün kurulduğu duyulmuş; meğer o 'Gaga Sakallı' diye alay ettiği hükümdar oğlunun düğünüymüş. Kız, sarayın mutfağına artık çorba ve ekmek istemek için gizlice girip hizmetçilik ederken, meclisin ortasında hükümdar kızı görmüş ve yanına çağırmış. Meğer o yırtık cübbeli çömlekçi, kızın kibrini kırmak için tebdiligezen o hükümdarın ta kendisiymiş! Kibrinden arınıp gözyaşlarıyla başını öne eğen kız, 'Ben nefsimin kibrine kurban olmuştum, asıl zenginlik tahtta değil alçakgönüllülükteymiş' diyerek affını dilemiş; ancak kibrini çamur teknesinde ezdiği gün hakiki huzura ve saadete kavuşmuş."
+        ]
+      },
+      {
+        id: "2-tamah", sira: "02", romen: "II", baslik: "Keloğlan ile Köse", tur: "Masal", huy: "Tamah", kim: "Köse",
+        bedel: "Kurnazlıkla kandırdığı Keloğlan'ın tuzağına kendi düşer, elindekini kaybeder.",
+        ozet: "Elindekine kanaat etmeyip Keloğlan’ın bir avuç rızkına göz diken açgözlü Köse, daha çoğunu kapmak isterken bütün malından ve canından olur.",
+        kapanis: "Tamah, başkasının avucundaki bir arpaya uzanırken kendi ambarını ateşe verir.",
+        kaynak: "Anadolu Masal Geleneği (Pertev Naili Boratav / Tahir Alangu Derlemeleri)",
+        paragraflar: [
+          "Bir varmış bir yokmuş, evvel zaman içinde kalbur saman içinde, yaşlı anasıyla kıt kanaat geçinen bir Keloğlan, bir de aynı köyde yedi mahallenin malına göz diken, sakalında üç tel tüy bulunmaz bir Köse varmış. Keloğlan ne vakit tarladan üç ölçek buğday kaldırsa, Köse bir hile bulur, kantarın topuzunu kaydırır, oğlanın elindeki ekmeği yarı yarıya elinden alırmış. Karnı doyar ama gözü doymazmış Köse’nin.",
+          "Bir güz günü Keloğlan, evdeki tek cılız öküzünü pazara götürürken yolda Köse önünü kesti. Yanındaki iki hilebaz arkadaşıyla sözleşip Keloğlan’a, 'Bre Keloğlan, bu boynuzu eğri keçiyle nereye gidersin?' diye takıldı. Birincisi keçi dedi, ikincisi keçi dedi, üçüncüsü de keçi deyince saf Keloğlan şaşırdı, koskoca öküzü keçi fiyatına yok pahasına Köse’ye kaptırdı. Köse, öküzü bedavaya kapmanın sevinciyle bıyık altından güldü; tamahı kursağında kabardıkça kabardı.",
+          "Gelgelelim Keloğlan bu oyunun altında kalmadı. Ertesi hafta eline aldığı eski bir bakır kepçenin altına gizlice iki altın sıkıştırdı, çarşıda dükkân sahibine önceden para verip anlaşma yaptı. Köse’nin tam yanında kepçeyi kazana vurup 'Açıl kepçem açıl!' dedi, dükkâncı da önüne tepsi tepsi baklava, börek dizdi. Köse bunu görünce gözleri faltaşı gibi açıldı: 'Ulan Keloğlan, bu kepçe para ödemeden yemek mi verir? Sat bunu bana, sana bir kese altın vereyim!' dedi.",
+          "Keloğlan nazlandı, 'Aman Köse Ağa, anamın yadigârıdır' dediyse de Köse’nin açgözlülüğü aklını başından almıştı. İki kese altını Keloğlan’ın kucağına sayıp bakır kepçeyi kaptığı gibi konağa koştu, bütün köyün ağalarını ziyafete çağırdı. Sofranın ortasında kepçeyi yere vurup 'Açıl kepçem açıl!' diye bağırdıysa da ne gelen oldu ne giden; konukların önünde rezil rüsva oldu.",
+          "Köse öfkeyle Keloğlan’ı bir çuvala tıktı, ırmağa atmaya götürdü. Çuvalı kıyıya bırakıp abdest almaya gittiği sırada Keloğlan çuvalın içinden, 'Zorla padişahın kızını veriyorlar, ben almam!' diye bağırmaya başladı. Oradan geçen zengin bir çoban bunu duyunca, 'Ben girerim!' diyerek Keloğlan’ı çözdü, sürüsünü ona bırakıp çuvala girdi. Köse döndüğünde çuvalı suya fırlattı. Ertesi gün Keloğlan’ı koca bir koyun sürüsüyle görünce şaşkına döndü. Keloğlan, 'Köse Ağa, beni kıyıya yakın attın da ancak bu kadar koyun çıktı; biraz daha derine atsaydın bin koyunla çıkardım!' dedi. Gözünü hırs bürüyen Köse, 'Beni en derine at!' diye kendi ayağıyla çuvala girdi ve tamahının ağırlığıyla ırmağın dibini boyladı."
+        ]
+      },
+      {
+        id: "3-haset", sira: "03", romen: "III", baslik: "Nardaniye Hanım", tur: "Masal", huy: "Haset", kim: "Üvey Anne (Hasetçi Kadın)",
+        bedel: "Nardaniye'nin duru güzelliğini çekemeyip canına kasteder; hasedinin ateşiyle kendi felaketini hazırlar.",
+        ozet: "Sihirli aynaya her gün 'Benden güzeli var mı?' diye soran kibirli üvey anne, Nardaniye Hanım’ın ay gibi parlayan güzelliğini çekemeyip onu dağ başında yok etmek ister.",
+        kapanis: "Haset, başkasının kandilini söndürmek için rüzgâr ararken kendi evinin ocağını kül eder.",
+        kaynak: "Türk Masal Külliyatı (Pertev Naili Boratav, Zaman Zaman İçinde / Tip 89)",
+        paragraflar: [
+          "Evvel zaman içinde, kalbur saman içinde; memleketin birinde nar tanesi gibi duru, ay parçası gibi aydınlık yüzlü Nardaniye Hanım adında yetim bir kız ile onun güzelliğini içine sindiremeyen bir üvey anne yaşarmış. Bu üvey anne her sabah kalkar, sandığından çıkardığı tılsımlı bir aynanın karşısına geçer, 'Ayna ayna, söyle bana; şu dünyada benden daha güzel bir hatun var mı?' diye sorarmış. Ayna da yıllarca 'Yoktur sultanım, senden güzeli ne yerde ne göktedir' dermiş.",
+          "Gel zaman git zaman Nardaniye Hanım serpilip on dört yaşına basmış; güzelliği öyle bir nur saçarmış ki güneş görse utanır, bulutların ardına saklanırmış. Günlerden bir gün üvey anne yine aynasının karşısına geçip aynı suali sormuş. Ayna bu kez dile gelip, 'Evet hatunum, sen pek güzelsin lakin Nardaniye Hanım senden bin kat daha güzeldir; yüzü ay gibi, yanakları nar içi gibidir' deyivermiş. Bu sözü işiten üvey annenin içine bir kor düşmüş; hasedinden gözleri dönmüş, tırnaklarını bağrına batırıp odasında fır dönmüş.",
+          "İçindeki haset yangını aklını başından alan kadın, evin uşağına gizlice bir kese altın verip Nardaniye’yi uzak bir ormana götürmesini, orada canına kıyıp gömleğini kana bulayarak getirmesini emretmiş. Lakin uşak dağ başına vardığında masum Nardaniye’nin gözyaşlarına kıyamamış; bir av hayvanı kesip kanını gömleğe sürmüş, kızı da ıssız dağların eteğinde Allah’a emanet bırakmış. Nardaniye az gitmiş uz gitmiş, dağ başında yiğitlerin terk edilmiş konağına sığınmış ve onların korumasında yaşamaya başlamış.",
+          "Saraydaki üvey anne Nardaniye’den kurtulduğunu sanarak neşeyle aynasının karşısına geçmiş. Ayna ise yine, 'Dağ başındaki konakta yaşayan Nardaniye Hanım hâlâ senden bin kat daha güzeldir' cevabını verince kadının hasedi katbekat harlanmış. Cadı kılığına girip dağdaki konağı bulmuş; kapıyı açan masum kıza zehirli bir tılsım vererek onu derin, ölü gibi bir uykuya yatırmış. Konağa dönen yiğitler Nardaniye’nin cansız gibi yatan bedenini görünce dövünmüş, onu billur bir sandukaya koyup ulu bir çınarın dalına emanet etmişler.",
+          "O diyardan geçen adil bir şehzade çınarın altındaki billur sandukayı fark etmiş. Nardaniye’nin başındaki zehirli tılsımı çıkarınca kız derin uykusundan uyanmış, başına gelenleri bir bir anlatmış. Şehzade kızı sarayına gelin etmiş ve sarayda büyük bir toy düğün kurulmuş. Düğüne davet edilen üvey anne, tahtta ay gibi parlayan Nardaniye’yi karşısında sapasağlam görünce hasedinden çatlayacak hale gelmiş; kötülüğünün utancıyla divanın ortasında yere yığılmış. İşte haset öyle bir zehirdir ki başkasına hazırladığı kuyunun dibine en nihayetinde sahibini yuvarlar."
+        ]
+      },
+      {
+        id: "4-gazap", sira: "04", romen: "IV", baslik: "Üç Nasihat", tur: "Masal", huy: "Gazap", kim: "Gurbetçi Yiğit",
+        bedel: "Gurbetten dönünce evinde yabancı sandığı bir delikanlıyı görüp öfkeyle kılıcına sarılır; sabır nasihatini hatırlayıp gazabını yenince öz evladını öldürmekten kurtulur.",
+        ozet: "Yıllarca gurbette çalışıp kazandığı üç altın akçeyi bilge bir ihtiyarın verdiği üç hayat nasihatine değişen yoksul yiğit, öfkesine gem vurarak ailesini ve ocağını kurtarır.",
+        kapanis: "Gazap, kından sıyrılan kör hançer gibidir; nefis sabır taşını çiğnemezse en sevdiklerinin kanına bulanır.",
+        kaynak: "Türk Masal Külliyatı (Pertev Naili Boratav, Zaman Zaman İçinde / Tip 384)",
+        paragraflar: [
+          "Evvel zaman içinde, kalbur saman içinde; köyünde rızkı dar bir garip yiğit, genç eşini ve kundaktaki yavrusunu geride bırakıp gurbet ellere çalışmaya gitmiş. Bir ustanın yanında tam yirmi yıl boyunca gece gündüz demeden alın teri dökmüş. Yirmi yılın sonunda memleketine dönmek isteyince ustası önüne üç altın akçe koyarak, 'Oğul, istersen bu üç altını al git; istersen bu üç altın yerine sana üç altın kıymetinde nasihat vereyim' demiş. Yiğit bir an düşünmüş, paranın tükenip gideceğini, hikmetin ise can kurtaracağını bilip nasihatleri seçmiş.",
+          "Bilge usta ilk altını alıp, 'Kestirme yolu bırakıp bildiğin anayoldan şaşma' demiş. İkinci altını alıp, 'Seni ilgilendirmeyen karanlık işe burnunu sokma' demiş. Üçüncü altını alıp en mühim sırrı fısıldamış: 'İçinde gazap ateşi alevlendiğinde, geceden sabaha dek sakın ola kılıcına sarılma; öfkeni yut, sabahın hayrını bekle.' Üstüne de yiğide yolluk niyetine büyük bir somun ekmek verip 'Bunu da evine varıp ailenle sofraya oturmadıkça sakın kesme' diye tembihlemiş.",
+          "Yiğit memleket yoluna düşmüş. Yolda kervancıların saptığı tehlikeli kestirme yola girmeyip anayoldan gitmiş, kervanın eşkıya tarafından soyulduğunu görünce ilk nasihatin hayatını kurtardığını anlamış. Gece kaldığı handa gördüğü garip halleri sorgulamayıp susmuş, ikinci nasihat sayesinde başını beladan korumuş. En nihayetinde yirmi yılın hasretiyle yüreği çarparak bir gece vakti kendi köyüne, virane evinin penceresine varmış.",
+          "Pencerenin aralığından içeri baktığında gördüğü manzara karşısında donakalmış. İçeride eşi, yatağın üstünde sırma saçlı genç bir delikanlıyla yan yana oturuyor, kadın delikanlının saçlarını şefkatle okşuyormuş. Bunu gören yiğidin beynine kan sıçramış; yirmi yıllık hasret bir anda cehennemî bir gazaba dönüşmüş. Gözleri kararmış, elini kılıcının kabzasına atmış, 'Bunca yıl beni beklemeyip haneme yabancı er mi aldın!' diye içeri dalıp ikisinin de başını uçurmaya niyetlenmiş.",
+          "Tam kapıyı tekmeyle kıracağı an kulağında ustanın o üçüncü nasihati çınlamış: 'Gazabın kabardığında sabaha dek kılıcına sarılma!' Yiğit dişlerini sıkmış, hançerini kınına sokup sabah ezanına kadar samanlıkta titreye titreye nefsini yenmiş. Gün ışıyıp kapıyı çaldığında eşi sevinç gözyaşlarıyla boynuna sarılmış. Yanındaki delikanlıyı göstererek, 'Beyim, işte yirmi yıl önce kundakta bıraktığın öz oğlun!' deyince yiğit dizlerinin üstüne yığılıp hüngür hüngür ağlamış. Bir anlık kör gazaba uysaydı öz evladını doğrayacak olan yiğit, ustanın verdiği ekmeği kesmiş; ekmeğin içinden yirmi yıllık emeği olan altınlar dökülmüş. İşte gazabını sabırla yenen insan hem canını hem de yuvasını kurtarmış."
+        ]
+      },
+      {
+        id: "5-zulum", sira: "05", romen: "V", baslik: "Keloğlan ve Yedi Başlı Dev", tur: "Masal", huy: "Zulüm", kim: "Yedi Başlı Dev",
+        bedel: "Dağları inleten cüssesi ve zulmüyle köylünün suyunu kesip insan yer; Keloğlan'ın sabrı ve keskin aklıyla mağarasında yok edilir.",
+        ozet: "Köyün pınarlarını kurutup her mevsim bir can kurban isteyen yedi başlı zalim dev, kaba kuvvetine ve pençesine güvense de Keloğlan’ın aklı karşısında hezimete uğrar.",
+        kapanis: "Zulüm, yedi başlı bir dev olsa da kaba gücün kibrine aldanır; mazlumun aklı zalimin başını kendi ininde ezer.",
+        kaynak: "Türk Masal Külliyatı (Pertev Naili Boratav, Az Gittik Uz Gittik / Tip 104)",
+        paragraflar: [
+          "Evvel zaman içinde, kalbur saman içinde; sarp kayalıkların ardında, kara dağların kovuğunda yaşayan yedi başlı bir dev varmış. Bu dev öyle zalim, öyle merhametsizmiş ki bastığı yer çöker, nefesi ekinleri kavururmuş. Dağdan inen gürül gürül ırmakların önüne koca kayaları yığarak köyün suyunu kesmiş; 'Bana her hafta bir araba buğday, kırk koyun ve bir de taze insan vermezseniz köyünüze bir damla su akıtmam!' diyerek köylülere kan kustururmuş.",
+          "Köylüler çaresizlikten inim inim inlerken, sıradaki kurban köyün en kimsesiz yetimi olan ihtiyar ananın oğluna, bizim Keloğlan’a gelmiş. Anacığı dizlerini dövüp saçını başını yolarken, kel kafasını kaşıyan Keloğlan, 'Ağlama anam, kaba kuvvetin zulmü çok olsa da aklın terazisi hepsinden ağırdır; ben o yedi başlı canavara mazlumun ahı neymiş göstereyim' demiş. Çantasına bir kalıp sert yağlı peynir, bir avuç kül ve bir de canlı beyaz güvercin koyup devin inine doğru yola koyulmuş.",
+          "Devin mağarasına vardığında yedi baş birden kükreyerek yeri göğü inletmiş: 'Hah! Bana bir lokmalık çelimsiz bir keloğlan mı gönderdiler? Seni tek lokmada yutayım da gör!' demiş. Keloğlan hiç istifini bozmadan gülmüş: 'Yavaş ol ey zalim dev! Cüssene güvenip böbürlenme; benim nefesim taşları ufalar, gücüm senin yedi başını da yerle bir eder!' demiş. Dev inanmayıp yerden koca bir kaya almış, pençesinde öyle bir sıkmış ki taştan tozlar savrulmuş: 'Sen de böyle taş sıkabilir misin?' diye böbürlenmiş.",
+          "Keloğlan çantasına el atıp taş gibi sert peyniri çıkarmış, pençesinde sıkıvermiş; peynirin suyu şorıl şorıl akınca dev şaşkına dönmüş: 'Aman, bu herif taştan su çıkarıyor!' diye ürkmüş. Ardından dev yerden bir kaya fırlatmış, kaya göğe çıkıp dakikalar sonra yere düşmüş. Keloğlan ise cebindeki beyaz güvercini çıkarıp kayalıkların arasından göğe fırlatıvermiş; güvercin uçup bulutların ardında kaybolunca, 'Gördün mü zalim? Benim attığım taş yere bile düşmez, göğe karışır!' demiş. Dev korkudan titremeye, Keloğlan’ın heybeti karşısında geri adım atmaya başlamış.",
+          "Gece olunca zalim dev Keloğlan’ı uykusunda demir gürz ile ezmek için hain bir plan kurmuş. Lakin Keloğlan yatağına koca bir kütük koyup kendisi kuytu köşeye saklanmış. Dev gece yarısı gelip yatağa yedi başlı gürzüyle yüz kere vurmuş. Sabah olunca Keloğlan’ı gerinerek dimdik karşısında görünce devin aklı başından gitmiş: 'Burası bana dar gelir, bu yiğit beni helak eder' diyerek kaçmaya yeltenmiş. İşte o an Keloğlan mağaranın kilit taşını akılla yerinden oynatarak koca kayaları devin yedi başının üstüne indirmiş; köylünün suyunu açmış. İşte bu masal anlatır ki, zulüm ne kadar korkunç görünse de, zulmün tahtı adaletin ve aklın tek bir hamlesiyle yerle bir olur."
+        ]
+      },
+      {
+        id: "6-iftira", sira: "06", romen: "VI", baslik: "Sedef Bacı", tur: "Masal", huy: "İftira", kim: "Kötü Kalpli Dadı ve Kızı",
+        bedel: "Sedef Bacı'yı denize atıp padişaha 'Kızın delirdi, çirkinleşti' diye iftira atarlar; hakikat ortaya çıkınca iftiracılar cezalarını çeker.",
+        ozet: "Öz kardeşine canını siper eden masum Sedef Bacı’nın talihini kıskanan hilekâr dadı, attığı zehirli iftira ve kurduğu tuzakla masumun ocağını söndürmeye kalkar.",
+        kapanis: "İftira, masumun üstüne atılan kara çamurdur; kuruyup döküldüğünde çamuru atanın elleri kara kalır.",
+        kaynak: "Türk Masal Külliyatı (Tahir Alangu, Billur Köşk Masalları / Eberhard-Boratav Tip 450)",
+        paragraflar: [
+          "Evvel zaman içinde, kalbur saman içinde; ana baba yadigârı iki öksüz kardeş yaşarmış: Biri sedef gibi parlayan, dürüst ve güzel kalpli Sedef Bacı, diğeri ise onun gözünden sakındığı küçük erkek kardeşiymiş. Kötü kalpli üvey annenin elinden kaçıp gurbet yollarına düşmüşler. Çölde susuzluktan kavruldukları bir gün küçük kardeş, kurdun bastığı su birikintisinden su içince bir anda ak tüylü, sevimli bir ceylana dönüşüvermiş. Sedef Bacı gözyaşları içinde ceylan kardeşinin boynuna sarılmış, onu bağrına basıp dağ başında bir kulübede besleyip büyütmüş.",
+          "Günün birinde o ülkenin genç ve adil padişahı avlanırken ceylanın peşinden kulübeye varmış; Sedef Bacı’nın edebine, masumiyetine ve ceylana gösterdiği merhamete vurulup onu sarayına baş hatun yapmış. Ceylan kardeş de sarayın has bahçesinde gül gibi yaşar olmuş. Lakin sarayda padişahın eski dadısı ile onun çopur yüzlü, fesat kızı varmış. Bu iki hasetçi kadın Sedef Bacı’nın bu saadetini hazmedememiş; 'Bu dağdan gelme kız koca saraya sultan oldu, benim kızıma ise yüz veren yok' diyerek içten içe zehir kaynatmışlar.",
+          "Padişah sefere çıktığı bir gün fırsat kollayan dadı, Sedef Bacı’yı hava alma bahanesiyle deniz kıyısındaki yüksek kayalıklara götürmüş. Kızın arkasından sinsice sokulup onu azgın dalgaların içine itivermiş. Ardından kendi çopur kızını ipekli libaslara büründürüp Sedef Bacı’nın yatağına yatırmış. Padişah seferden döndüğünde yatakta yatan kadını görünce şaşırmış; dadı ise hemen zehirli iftirasını savurmuş: 'Devletlim, sultanımızın başına dertler yağdı; içine cinler girdi, çirkinleşti, üstelik her gece bahçedeki ceylanı kesip kanını içmek istiyor!' diyerek masum kıza en ağır karayı çalmış.",
+          "Padişah duyduğu iftira karşısında derin bir kedere düşmüş ama gerçeği araştırmadan hüküm vermek istememiş. Bu sırada ceylan kardeş her akşam deniz kıyısına koşar, dalgalara doğru boynunu uzatıp, 'Sedef Bacım, tatlı bacım! Çopur kız yatakta sefa sürer, dadı cellada boynumu biler, nerdesin?' diye melemeye başlarmış. Denizin dibinde bir balığın karnında diri kalan Sedef Bacı ise dalgaların arasından, 'Ceylan kardeşim, ayağımda mercan bağlı, kollarımda yosun sarılı, gelemem!' diye ses verirmiş.",
+          "Bir gece ceylanın ardından kıyıya gizlice gelen padişah bu feryadı kendi kulaklarıyla işitmiş. Dalgıçlar salıp Sedef Bacı’yı denizden sağ salim çıkarttırmış. Karşısında nur gibi parlayan hakiki eşini gören padişah, dadının ve kızının attığı çirkin iftiranın aslı astarını çözmüş. İftiracı dadı ile kızı divanın önünde suçlarını bir bir itiraf etmiş ve layık oldukları cezaya çarptırılmışlar. Bu masal da beyan eder ki; iftira bir müddet güneşi karartsa da hakikatin nuru en derin denizlerden bile fışkırıp masumun ak yüzünü ortaya çıkarır."
+        ]
+      },
+      {
+        id: "7-vefasizlik", sira: "07", romen: "VII", baslik: "Ak Yılan Masalı", tur: "Masal", huy: "Vefasızlık", kim: "Vefasız Oduncu",
+        bedel: "Kendisini açlıktan ve kuyudan kurtaran velinimetine altın hırsıyla balta savurur; dostluğunu, bereketini ve evladını kaybeder.",
+        ozet: "Ormanda rastladığı bilge Ak Yılan’ın her gün verdiği altın sikkeyle zenginleşen yoksul oduncu, daha çok altın kapmak hırsıyla yılana pusu kurup vefasızlığının acı bedelini öder.",
+        kapanis: "Vefasızlık, ekmeğini yediği kaba hançer saplamaktır; yılanın kuyruğu kopsa da vefasız insanın vicdan yarası asla dikiş tutmaz.",
+        kaynak: "Türk Masal Külliyatı (Pertev Naili Boratav, Az Gittik Uz Gittik / Tip 63)",
+        paragraflar: [
+          "Evvel zaman içinde, kalbur saman içinde; ormanda odun kesip sırtında satarak kıt kanaat geçinen, evinde açlıktan ağlayan çocuklarına ekmek götüremeyen bir yoksul oduncu varmış. Günlerden bir gün ormanın en kuytu yerinde, ulu bir pınarın başında belden aşağısı ak pullarla örtülü, başında zümrüt bir taç taşıyan bilge bir Ak Yılan ile karşılaşmış. Oduncu korkudan titreyip kaçmaya kalkınca, Ak Yılan insan diliyle seslenmiş: 'Korkma ey ademoğlu! Hâlini bilirim, derdine ortak olmak isterim. Sen her gün bana bir çanak taze süt getir, ben de sana rızkın için bir altın sikke vereyim' demiş.",
+          "Oduncu sevinçle evine dönmüş. Ertesi gün bir çanak sütü taşın üstüne koymuş; Ak Yılan sütü içip taşın üstüne parıl parıl parlayan bir altın sikke bırakmış. Günler günleri, aylar ayları kovalamış. Oduncu her sabah süt götürüp altını almış; borçlarını ödemiş, konağını yaptırmış, ailesini refaha kavuşturmuş. Ak Yılan ona hem velinimet hem de en sadık dert ortağı olmuş. Lakin oduncunun içinde sinsi bir tamah ve nankörlük filizlenmeye başlamış.",
+          "Oduncu bir gün hastalanıp yatağa düşünce oğlunu yanına çağırmış; pınarın başındaki sırrı anlatıp sütü yılana götürmesini tembihlemiş. Ne var ki babasının vefasız huyunu alan oğlan, yılanın her gün tek bir altın vermesini az bulmuş: 'Bu yılanın yuvası muhakkak altın doludur; tek tek bekleyeceğime yılanın başını taşla ezer, inindeki bütün hazineyi bir seferde kaparım!' diyerek pınarın başına gizlice koca bir nacakla varmış.",
+          "Ak Yılan sütü içmek için kovuktan çıktığı an, nankör oğlan elindeki nacağı var gücüyle savurmuş. Lakin Ak Yılan çevik davranıp sıçramış; nacak sadece yılanın kuyruğunun ucunu kesmiş. Canı yanan Ak Yılan gazaba gelip zehirli dişiyle oğlanı sokmuş, çocuk oracıkta can vermiş. Akşam olup oğlunun cesedini pınar başında bulan oduncu, dövünüp saçını başını yolmuş ama bu felakete kendi nankörlüğünün ve vefasızlığının sebep olduğunu pekala bilmiş.",
+          "Aradan bir yıl geçtikten sonra bereketi kaçan, vicdan azabıyla eriyen ihtiyar oduncu, eline yine bir çanak süt alıp pınarın başına varmış. Ak Yılan’a yalvarıp, 'Gel eski dostluğumuzu yenileyelim, beni affet' demiş. Kovuktan çıkan Ak Yılan başını kederle sallayarak şu tarihi hükmü vermiş: 'Ey vefasız ademoğlu! Sende bu evlat acısı, bende de bu kuyruk yarası varken biz artık dost olamayız. Vefa bir sırça kadehtir; bir kere kırdın mı bin yıl yapıştırsan da su tutmaz!' diyerek kovuğuna çekilmiş ve oduncuyu ömrünün sonuna dek vicdanının karanlığıyla baş başa bırakmış."
+        ]
+      },
+      {
+        id: "hukum", sira: "08", romen: "VIII", baslik: "Tuz Kadar Sevmek", tur: "Masal", huy: "Hüküm", kim: "Padişah (ve küçük kızı)",
+        bedel: "Kızının sevgisini altına değil tuza benzetmesine öfkelenip onu sürgün eder; tuzsuz sofrada aç kalınca gösterişin değil hakikatin hükmünü anlar.",
+        ozet: "Kızının sevgisini altına değil tuza benzetmesine öfkelenip onu sürgün eden kibirli padişah, yıllar sonra tuzsuz bir ziyafet sofrasında aç kalarak gösterişli sözlerin değil, sade hakikatin hükmünü anlar.",
+        kapanis: "Hüküm odur ki; sarayların altını ve gümüşü çok olsa da, hakikat ve vefanın tuzu eksikse o sofrada ne insanın karnı doyar ne de nefsi terbiye olur.",
+        kaynak: "Anadolu Masal Geleneği (Pertev Naili Boratav / Tahir Alangu Derlemeleri)",
+        paragraflar: [
+          "Evvel zaman içinde, kalbur saman içinde, develer tellal iken, pireler berber iken; memleketin birinde gücüyle gururlanan, tahtına mağrur bir padişah ile onun canından aziz bildiği üç kızı yaşarmış. Günlerden bir gün padişah, vezirlerini ve beylerini divana toplamış; kızlarının sevgisini cümle aleme göstermek için üçünü de huzuruna çağırmış. Önce büyük kızına dönüp sormuş: 'Söyle bakalım benim ceylan gözlü kızım, sen babanı ne kadar seversin?' Büyük kız boynunu büküp, 'Babacığım, ben seni dünyalar kadar, sarayındaki hazineler dolusu altın kadar severim' demiş. Padişahın göğsü kabarmış, ona altın bir taç bağışlamış.",
+          "Sıra ortanca kıza gelmiş. Padişah aynı suali ona da sormuş. Ortanca kız tebessüm edip, 'Devletli babacığım, ben de seni kilerlerdeki, kervanlardaki gümüşler ve elmaslar kadar severim' demiş. Padişahın keyfine diyecek yokmuş; ona da gümüş işlemeli kaftanlar, ipekli kumaşlar buyurmuş. En sonunda gözü gibi sakındığı küçük kızına dönmüş: 'Bre benim nazlı fidanım, ya sen beni ne kadar seversin?' Küçük kız duru bir bakışla babasının gözlerinin içine bakmış, hiç tereddüt etmeden: 'Babacığım, ben seni bir tutam tuz kadar severim' deyivermiş.",
+          "Bu sözü duyan padişahın kaşları çatılmış, gazaptan gözleri kan çanağına dönmüş. 'Bre nankör kız! Ablaların beni altınla gümüşle ölçerken sen beni ocak başındaki üç paralık tuzla mı bir tuttun?' diye kükremiş. Kibir ve gazap aklını öyle bir örtmüş ki, kızının ne demek istediğini sormadan cellatlarını çağırmış; kızın sırtındaki libası soydurup onu ıssız, yalçın dağların ardına sürgüne göndermiş. Küçük kız kaderine razı olup az gitmiş uz gitmiş, dere tepe düz gitmiş; en sonunda komşu diyarın adil şehzadesine rast gelmiş. Şehzade kızın edebine, aklına ve duru gönlüne hayran olup onu kendine eş seçmiş.",
+          "Aradan yıllar geçmiş, küçük kız gurbet elinde hanım sultan olmuş ama babasının kibrini ve verdiği o haksız hükmü hiç unutmamış. Bir gün komşu hükümdar sıfatıyla ihtiyar padişahı sarayına büyük bir barış ziyafetine davet etmiş. Aşçılara gizlice ferman verip, 'Gelen padişahın önüne konacak bütün etleri, pilavları, çorbaları altın sahanlarda, gümüş kâselerde sunun; lakin hiçbirine tek bir zerre dahi tuz atmayın!' diye emretmiş. Padişah büyük bir debdebe ile sofraya oturmuş. Altın çanağa uzanıp nefis kokulu kebaptan bir lokma almış, yüzünü buruşturup geri bırakmış; gümüş kâsedeki çorbayı tatmış, yutamamış. Sofradaki her yemek göz alıcı imiş ama hiçbirinde ne tat varmış ne lezzet.",
+          "Padişah en sonunda dayanamayıp kaşığını fırlatmış: 'Bre ev sahipleri! Bu ne biçim ziyafettir? Altın tabakta zehir mi yedirirsiniz? Bütün aşlarınız tatsız, tuzsuz, boğazdan geçmez!' diye haykırmış. İşte o vakit küçük kız tül peçesini kaldırmış, babasının önüne bir avuç ak tuz koyarak dile gelmiş: 'Ey devletli babam! Vaktiyle beni sarayından kovduran o üç paralık tuzu bugün koca padişah sofrasında arar oldun. Demek ki altınla gümüş ancak göz boyar; insanın canına can katan, aşına lezzet, yuvasına bereket veren asıl hakikat tuz imiş!' Bu sözler karşısında kibrinden ve acele hükmünden utanan padişahın gözünden yaşlar boşanmış; kızının boynuna sarılıp af dilemiş. İşte bu arşivin sekizinci ve son masalı da gösterir ki; insan altın gibi parlayan nefis heveslerine aldanırsa dünyayı ziyan eder; nefsin yedi başını kesip huzura ermek ise ancak hakikatin ve adaletin hükmüne boyun eğmekle mümkündür."
+        ]
+      }
+    ];
+
+    /* ==========================================================================
+       JAVASCRIPT BÖLÜM 3: SAYFA DURUMU VE TARAYICI HAFIZASI (LOCALSTORAGE)
+       Açıklama: Kullanıcının sitede yaptığı seçimleri saklar:
+       - Hangi hikaye seçili?
+       - Hangi hikayeler okundu?
+       - Yazı boyutu ve gece/gündüz teması nedir?
+       Böylece kullanıcı sayfayı yenilese bile okuduğu hikayeler kaybolmaz.
+       ========================================================================== */
+    const OLCEK_KADEMELERI = [0.92, 1, 1.12];
+    let aktifHuyFiltresi = "Tümü";
+    let seciliAnlatiId = null;
+    let okunanAnlatilar = [];
+    let aktifOlcekIndeksi = 1;
+
+    // Tarayıcı hafızasından (localStorage) kayıtlı veriyi okur
+    function depodanOku(anahtar, varsayilan) {
+      try { return JSON.parse(localStorage.getItem(anahtar)) ?? varsayilan; } catch { return varsayilan; }
+    }
+    // Verileri tarayıcı hafızasına (localStorage) yazar
+    function depoyaYaz(anahtar, deger) {
+      try { localStorage.setItem(anahtar, JSON.stringify(deger)); } catch {}
+    }
+
+    /* ==========================================================================
+       JAVASCRIPT BÖLÜM 4: EJDERHA BAŞLARINI VE MÜHÜRLERİ EKRANA ÇİZME
+       Açıklama: 
+       1) Sağ üstteki 7 başlı Selçuklu ejderha gravürünün başlarını çizer.
+       2) Okunan bir baş varsa onu kırmızı renge çevirir (kesildi damgası).
+       3) 'X/7 BAŞ KESİLDİ' sayacını ve altındaki elmas mühürleri günceller.
+       ========================================================================== */
+    const EJDERHA_KONUMLARI = [
+      { x: 54, y: 18 }, { x: 128, y: 14 }, { x: 204, y: 11 }, { x: 280, y: 8 },
+      { x: 356, y: 11 }, { x: 432, y: 14 }, { x: 506, y: 18 }
+    ];
+
+    function ejderhaVeMuhurleriGuncelle() {
+      // 1) Sağ üstteki Selçuklu ejderha gravürünün 7 başını çiz
+      const ejderhaKatmani = document.getElementById("ejderha-baslar-katmani");
+      ejderhaKatmani.innerHTML = EJDERHA_KONUMLARI.map((k, i) => {
+        const a = ANLATILAR[i];
+        const sinif = `ejderha-bas-grubu ${okunanAnlatilar.includes(a.id) ? "kesildi" : ""} ${seciliAnlatiId === a.id ? "secili" : ""}`;
+        const cx = k.x;
+        const cy = k.y + 20;
+        // Zarif, küçük ve kıvrımlı Selçuklu Rumî ejderha başı formu
+        const kafaYolu = `M ${cx},${cy - 14} C ${cx - 5},${cy - 16} ${cx - 10},${cy - 14} ${cx - 13},${cy - 9} C ${cx - 17},${cy - 4} ${cx - 15},${cy + 1} ${cx - 11},${cy + 4} C ${cx - 13},${cy + 9} ${cx - 9},${cy + 14} ${cx},${cy + 19} C ${cx + 9},${cy + 14} ${cx + 13},${cy + 9} ${cx + 11},${cy + 4} C ${cx + 15},${cy + 1} ${cx + 17},${cy - 4} ${cx + 13},${cy - 9} C ${cx + 10},${cy - 14} ${cx + 5},${cy - 16} ${cx},${cy - 14} Z`;
+        const gozler = k.tekGoz
+          ? `<circle class="bas-goz" cx="${cx}" cy="${cy - 2}" r="2.8"/>`
+          : `<ellipse class="bas-goz" cx="${cx - 5}" cy="${cy - 2}" rx="1.6" ry="2.2"/>
+             <ellipse class="bas-goz" cx="${cx + 5}" cy="${cy - 2}" rx="1.6" ry="2.2"/>`;
+        return `<g class="${sinif}" data-bas-id="${a.id}" onclick="location.hash='#/bas/${a.id}'">
+          <title>${a.sira} · ${a.huy} (${a.baslik})</title>
+          <path class="bas-dil" d="M${cx},${cy - 14} Q${cx - 3},${cy - 20} ${cx - 5},${cy - 24} M${cx},${cy - 14} Q${cx + 3},${cy - 20} ${cx + 5},${cy - 24}" stroke-width="1.1"/>
+          <path class="bas-cerceve" d="${kafaYolu}"/>
+          ${gozler}
+          <text class="bas-no" x="${cx}" y="${cy + 10}" text-anchor="middle">${a.romen}</text>
+          <text class="bas-isim-etiket" x="${cx}" y="${cy + 30}" text-anchor="middle">${a.huy.toLocaleUpperCase("tr")}</text>
+        </g>`;
+      }).join("");
+
+      // 2) Yedi Baş elmas mühür dizisini ve sayacı güncelle
+      let kesilenSayisi = 0;
+      document.getElementById("ust-elmas-dizisi").innerHTML = ANLATILAR.map((a, i) => {
+        const okundu = okunanAnlatilar.includes(a.id);
+        const aktif = seciliAnlatiId === a.id;
+        if (i < 7) {
+          if (okundu) kesilenSayisi++;
+          return `<button type="button" class="bas-elmas-buton ${okundu ? "okundu" : ""} ${aktif ? "aktif-bas" : ""}" title="${a.sira} · ${a.baslik}" onclick="location.hash='#/bas/${a.id}'">
+            <svg viewBox="0 0 16 16" aria-hidden="true"><polygon class="elmas-sekil" points="8,1.5 14.5,8 8,14.5 1.5,8"/></svg>
+            <span class="elmas-mini-no">${a.sira}</span>
+          </button>`;
+        }
+        return `<span class="hukum-ayirici-cizgi" aria-hidden="true"></span>
+          <button type="button" class="hukum-isareti-buton ${okundu ? "okundu" : ""}" title="08 · Hüküm: ${a.baslik}" onclick="location.hash='#/hukum'">
+            <span class="hukum-isareti-cizgi"></span><span class="elmas-mini-no">08</span>
+          </button>`;
+      }).join("");
+
+      document.getElementById("bas-sayac-metni").textContent = `${kesilenSayisi}/7 BAŞ KESİLDİ`;
+    }
+
+    /* ==========================================================================
+       JAVASCRIPT BÖLÜM 5: SOL FİHRİSTİ LİSTELEME VE KÖTÜ HUYA GÖRE SÜZME
+       Açıklama: Kullanıcı yukarıdan bir huy seçtiğinde (örneğin 'Kibir'),
+       ANLATILAR listesini filtreler ve sadece o huya ait hikayeleri sol menüye dizer.
+       'Tümü' seçilirse 8 hikayenin tamamını listeler.
+       ========================================================================== */
+    function filtreleVeListele() {
+      const eslesenler = ANLATILAR.filter(a => aktifHuyFiltresi === "Tümü" || a.huy === aktifHuyFiltresi);
+      document.getElementById("sonuc-sayaci").textContent = `${eslesenler.length} MASAL GÖSTERİLİYOR`;
+
+      document.getElementById("anlati-listesi").innerHTML = eslesenler.map(a => {
+        const okundu = okunanAnlatilar.includes(a.id);
+        const aktif = seciliAnlatiId === a.id;
+        const adres = a.id === "hukum" ? "#/hukum" : `#/bas/${a.id}`;
+        return `<li class="anlati-satiri ${a.id === "hukum" ? "hukum-satiri" : ""} ${okundu ? "okundu" : ""}">
+          <a class="anlati-baglantisi" href="${adres}" data-id="${a.id}" ${aktif ? 'aria-current="page"' : ""}>
+            <div class="satir-numara-kutusu">
+              <span class="satir-tamga">${a.id === "hukum" ? "SON" : "BAŞ"}</span>
+              <span class="satir-numara">${a.sira}</span>
+            </div>
+            <div class="satir-bilgi">
+              <span class="satir-baslik">${a.baslik}</span>
+              <span class="satir-alt-meta">${a.huy.toLocaleUpperCase("tr")} · ${a.tur.toLocaleUpperCase("tr")}</span>
+            </div>
+            <span class="satir-okundu-isareti" aria-label="${okundu ? "Okundu" : "Okunmadı"}">
+              <svg viewBox="0 0 12 12" aria-hidden="true"><polygon points="6,1 11,6 6,11 1,6"/></svg>
+            </span>
+          </a>
+        </li>`;
+      }).join("");
+    }
+
+    /* ==========================================================================
+       JAVASCRIPT BÖLÜM 6: SEÇİLEN HİKÂYEYİ SAĞ OKUMA PANELİNE YÜKLEME
+       Açıklama: Kullanıcı fihristten veya ejderha başından bir hikaye seçtiğinde:
+       - Hikayeyi 'okundu' listesine ekler ve hafızaya kaydeder.
+       - Başlık, özet, kötü huy fişi ve okuma paragraflarını sağ panele yerleştirir.
+       - Önceki / Sonraki hikaye butonlarını çalışır hale getirir.
+       - Eğer hiçbir hikaye seçilmemişse giriş kapağını (sekiz levhalı matris) gösterir.
+       ========================================================================== */
+    function anlatiGoster(id) {
+      const indeks = ANLATILAR.findIndex(item => item.id === id);
+      const bosDefter = document.getElementById("bos-defter");
+      const anlatiGorunumu = document.getElementById("anlati-gorunumu");
+
+      // Geçersiz veya boş hash ise Katalog Kapağını göster
+      if (indeks === -1) {
+        seciliAnlatiId = null;
+        bosDefter.classList.remove("gizli");
+        anlatiGorunumu.classList.remove("aktif");
+        document.body.classList.remove("mobil-okuma-acik");
+        filtreleVeListele();
+        ejderhaVeMuhurleriGuncelle();
+        document.getElementById("ilerleme-cubugu").style.width = "0%";
+        return;
+      }
+
+      const a = ANLATILAR[indeks];
+      seciliAnlatiId = a.id;
+      if (!okunanAnlatilar.includes(a.id)) {
+        okunanAnlatilar.push(a.id);
+      }
+
+      // Üst bilgi, başlık, arşiv fişi ve paragrafları doldur (dk ve Varak ibaresi olmadan)
+      document.getElementById("anlati-ust-meta").textContent = a.id === "hukum"
+        ? `HÜKÜM · ${a.tur.toLocaleUpperCase("tr")} · 08/08`
+        : `BAŞ ${a.sira} · ${a.tur.toLocaleUpperCase("tr")} · ${a.sira}/08`;
+      document.getElementById("anlati-baslik").textContent = a.baslik;
+      document.getElementById("anlati-ozet").textContent = a.ozet;
+      document.getElementById("fis-huy").textContent = a.huy;
+      document.getElementById("fis-kim").textContent = a.kim;
+      document.getElementById("fis-bedel").textContent = a.bedel;
+      document.getElementById("gravur-altyazi").textContent = `LEVHA ${a.sira} · ${a.huy.toLocaleUpperCase("tr")}`;
+      document.getElementById("anlati-ozel-svg").innerHTML = SAHNE_GRAVURLERI[a.id] || "";
+      document.getElementById("mobil-cubuk-baslik").textContent = `${a.sira} · ${a.baslik}`;
+      document.getElementById("anlati-govde").innerHTML = a.paragraflar.map(p => `<p>${p}</p>`).join("");
+      document.getElementById("anlati-kapanis").textContent = a.kapanis;
+      document.getElementById("anlati-kaynak").textContent = `Kaynak: ${a.kaynak}`;
+
+      // Önceki / Sonraki Baş düğmeleri
+      const oncekiBtn = document.getElementById("btn-onceki-anlati");
+      const sonrakiBtn = document.getElementById("btn-sonraki-anlati");
+      oncekiBtn.disabled = indeks <= 0;
+      sonrakiBtn.disabled = indeks >= ANLATILAR.length - 1;
+      oncekiBtn.onclick = () => { const h = ANLATILAR[indeks - 1]; location.hash = h.id === "hukum" ? "#/hukum" : `#/bas/${h.id}`; };
+      sonrakiBtn.onclick = () => { const h = ANLATILAR[indeks + 1]; location.hash = h.id === "hukum" ? "#/hukum" : `#/bas/${h.id}`; };
+
+      bosDefter.classList.add("gizli");
+      anlatiGorunumu.classList.add("aktif");
+      document.body.classList.add("mobil-okuma-acik");
+      filtreleVeListele();
+      ejderhaVeMuhurleriGuncelle();
+      window.scrollTo({ top: 0, behavior: "auto" });
+    }
+
+    /* ==========================================================================
+       JAVASCRIPT BÖLÜM 7: GECE/GÜNDÜZ MODU, YAZI BOYUTU VE SAYFA LİNKLERİ (HASH)
+       Açıklama:
+       - temaUygula: Gece/gündüz modunu değiştirir ve hafızaya kaydeder.
+       - olcekUygula: A- ve A+ butonlarıyla font boyutunu büyütüp küçültür.
+       - hashCozumle: Sayfa linkindeki adrese (#/bas/1-kibir gibi) bakarak
+         kullanıcının istediği doğru hikayeyi açar.
+       ========================================================================== */
+    function temaUygula(tema) {
+      const gecerli = tema === "gece" ? "gece" : "gunduz";
+      document.documentElement.setAttribute("data-tema", gecerli);
+      const btn = document.getElementById("btn-tema");
+      btn.setAttribute("aria-pressed", String(gecerli === "gece"));
+      btn.textContent = gecerli === "gece" ? "GÜNDÜZ" : "GECE";
+      depoyaYaz("yediBas_tema", gecerli);
+    }
+
+    function olcekUygula(indeks) {
+      aktifOlcekIndeksi = Math.max(0, Math.min(OLCEK_KADEMELERI.length - 1, indeks));
+      document.documentElement.style.setProperty("--olcek", String(OLCEK_KADEMELERI[aktifOlcekIndeksi]));
+      depoyaYaz("yediBas_olcek", aktifOlcekIndeksi);
+    }
+
+    function hashCozumle() {
+      const hash = location.hash || "";
+      if (hash === "#/hukum") return anlatiGoster("hukum");
+      if (hash.startsWith("#/bas/")) return anlatiGoster(decodeURIComponent(hash.replace("#/bas/", "")));
+      anlatiGoster(null);
+    }
+
+    /* ==========================================================================
+       JAVASCRIPT BÖLÜM 8: UYGULAMANIN İLK AÇILIŞI (BAŞLATMA FONKSİYONU)
+       Açıklama: Sayfa ilk yüklendiğinde otomatik çalışır:
+       - Hafızadaki kayıtlı temayı, yazı boyutunu ve okunan hikayeleri yükler.
+       - Giriş kapağındaki 8 adet küçük seçim kartını oluşturur.
+       - Filtre sekmelerine, okuma araçlarına ve butonlara tıklama görevi verir.
+       - Klavye kısayollarını (Yukarı/Aşağı ok tuşları, J/K ve ESC) dinler.
+       ========================================================================== */
+    function baslat() {
+      // 1. Sayfa her yenilendiğinde okuma sayacını sıfırla (0/7 Baş Kesildi olarak başlar)
+      okunanAnlatilar = [];
+      try { localStorage.removeItem("yediBas_okunanlar"); } catch {}
+      temaUygula(depodanOku("yediBas_tema", "gunduz"));
+      olcekUygula(depodanOku("yediBas_olcek", 1));
+
+      // 2. Açılış kapağındaki 8 adet taş baskı seçim kartını oluştur
+      document.getElementById("bos-defter-matris").innerHTML = ANLATILAR.map(a => {
+        const adres = a.id === "hukum" ? "#/hukum" : `#/bas/${a.id}`;
+        return `<button type="button" class="matris-hucre" onclick="location.hash='${adres}'">
+          <div class="matris-ust">
+            <span class="matris-no">${a.id === "hukum" ? "HÜKÜM" : "BAŞ"} ${a.sira}</span>
+            <span class="matris-tur">${a.tur}</span>
+          </div>
+          <div class="matris-minyaturler" aria-hidden="true">${SAHNE_GRAVURLERI[a.id]}</div>
+          <span class="matris-huy">${a.huy}</span>
+          <span class="matris-isim">${a.baslik}</span>
+        </button>`;
+      }).join("");
+
+      // 3. Kötü huy filtreleme sekmelerine tıklama özelliği ver
+      document.querySelectorAll("#huy-filtreleri .filtre-sekme").forEach(sekme => {
+        sekme.onclick = () => {
+          document.querySelectorAll("#huy-filtreleri .filtre-sekme").forEach(s => s.classList.remove("aktif"));
+          sekme.classList.add("aktif");
+          aktifHuyFiltresi = sekme.dataset.huy;
+          filtreleVeListele();
+        };
+      });
+
+      // 4. Okuma araçları butonlarına tıklama özelliği ver (A-, A+, Gece Modu, Rastgele Baş)
+      document.getElementById("btn-yazi-kucult").onclick = () => olcekUygula(aktifOlcekIndeksi - 1);
+      document.getElementById("btn-yazi-buyut").onclick = () => olcekUygula(aktifOlcekIndeksi + 1);
+      document.getElementById("btn-tema").onclick = () => temaUygula(document.documentElement.getAttribute("data-tema") === "gece" ? "gunduz" : "gece");
+      document.getElementById("btn-rastgele-anlati").onclick = () => { location.hash = `#/bas/${ANLATILAR[Math.floor(Math.random() * 7)].id}`; };
+      document.getElementById("btn-deftere-don").onclick = () => { location.hash = ""; };
+
+      // 5. Sayfa adresi değiştiğinde, sayfa kaydırıldığında ve klavye tuşlarına basıldığında tepki ver
+      window.addEventListener("hashchange", hashCozumle);
+      window.addEventListener("scroll", () => {
+        const yukseklik = document.documentElement.scrollHeight - window.innerHeight;
+        document.getElementById("ilerleme-cubugu").style.width = (!seciliAnlatiId || yukseklik <= 0) ? "0%" : `${Math.min(100, (window.scrollY / yukseklik) * 100)}%`;
+      }, { passive: true });
+
+      window.addEventListener("keydown", e => {
+        if (e.key === "Escape" && seciliAnlatiId) location.hash = "";
+        const ileri = e.key === "ArrowDown" || e.key === "j" || e.key === "J";
+        const geri = e.key === "ArrowUp" || e.key === "k" || e.key === "K";
+        if (!ileri && !geri) return;
+        const baglantilar = Array.from(document.querySelectorAll("#anlati-listesi .anlati-baglantisi"));
+        if (!baglantilar.length) return;
+        e.preventDefault();
+        const mevcut = baglantilar.findIndex(el => el.dataset.id === seciliAnlatiId);
+        const yeni = ileri ? (mevcut < baglantilar.length - 1 ? mevcut + 1 : 0) : (mevcut > 0 ? mevcut - 1 : baglantilar.length - 1);
+        location.hash = baglantilar[yeni].getAttribute("href");
+      });
+
+      hashCozumle();
+    }
+
+    document.addEventListener("DOMContentLoaded", baslat);
+  </script>
+</body>
+</html>

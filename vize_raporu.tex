@@ -1,0 +1,340 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage[turkish]{babel}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{hyperref}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{longtable}
+\usepackage{amssymb}
+\usepackage{ifthen}
+\usepackage{graphicx}
+\usepackage{listings}
+\usepackage{xcolor}
+
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue!70!black,
+    urlcolor=blue!70!black
+}
+
+\lstset{
+    basicstyle=\ttfamily\small,
+    breaklines=true,
+    frame=single,
+    backgroundcolor=\color{gray!8},
+    tabsize=2,
+    showstringspaces=false
+}
+
+\begin{document}
+
+% ==============================================================================
+% KAPAK SAYFASI
+% ==============================================================================
+\begin{titlepage}
+    \centering
+    \vspace*{2cm}
+    
+    {\Large \textbf{İSTANBUL MEDİPOL ÜNİVERSİTESİ}}\\[0.3cm]
+    {\large \textbf{GÜZEL SANATLAR TASARIM VE MİMARLIK FAKÜLTESİ}}\\[0.2cm]
+    {\large GÖRSEL İLETİŞİM TASARIMI BÖLÜMÜ}\\[2.5cm]
+    
+    {\Huge \textbf{YEDİ BAŞ}}\\[0.6cm]
+    {\LARGE Türk Masallarında Yedi Kötü Huy ve Bir Hüküm}\\[0.4cm]
+    {\large Türk Masalları Derlemesi Web Sayfası Vize Raporu}\\[2.5cm]
+    
+    \textbf{Ders:} Programlamaya Giriş\\[0.2cm]
+    \textbf{Öğretim Üyesi:} Öğr. Gör. Meral Şentürk\\[1.5cm]
+    
+    \textbf{Hazırlayan:} Hanife Elanur Karataş\\[0.2cm]
+    \textbf{Öğrenci No:} 86230008\\[2cm]
+    
+    \begin{center}
+    \fbox{
+    \begin{minipage}{0.85\textwidth}
+    \centering
+    \vspace{0.2cm}
+    \textbf{Proje Bağlantıları}\\[0.3cm]
+    \textbf{GitHub Deposu:}\\
+    \url{https://github.com/ekaratas070-ship-it/yedi-bas-turk-masallari}\\[0.3cm]
+    \textbf{YouTube Sunum Videosu:}\\
+    \url{https://www.youtube.com/watch?v=rfmjC4m0ubo}
+    \vspace{0.2cm}
+    \end{minipage}
+    }
+    \end{center}
+    
+    \vfill
+    {\large Kasım 2026}
+\end{titlepage}
+
+\newpage
+\tableofcontents
+\newpage
+
+% ==============================================================================
+% 1. GİRİŞ
+% ==============================================================================
+\section{Giriş}
+
+Bu proje, İstanbul Medipol Üniversitesi Görsel İletişim Tasarımı Bölümü Programlamaya Giriş dersi vize ödevi kapsamında geliştirilmiştir. Çalışmanın temel amacı; Türk halk anlatı geleneğinin en zengin damarlarından olan klasik Türk masallarını, dijital çağın kullanıcı deneyimi ve estetik ilkeleriyle buluşturan özgün, işlevsel ve tek sayfalık bir web arayüzü tasarlamaktır. Projede sıfırdan kurgulanan küratöryel temada; Türk masallarındaki yedi başlı ejderha (Evren) motifi, insan nefsinin yedi karanlık huyu (Kibir, Tamah, Haset, Gazap, Zulüm, İftira, Vefasızlık) ve hepsinin nihai muhasebesini temsil eden ``Hüküm'' kavramıyla eşleştirilmiştir. Ödev gereksinimleri doğrultusunda sistem; tamamen harici kütüphane bağımsız (zero-dependency), tek bir HTML dosyası içinde içsel CSS ve içsel JavaScript ile yapılandırılmış ve internetsiz ortamda eksiksiz çalışacak biçimde hayata geçirilmiştir.
+
+\subsection{Proje Özeti}
+``Yedi Baş'', Türk masal külliyatından (Pertev Naili Boratav ve Tahir Alangu derlemeleri) özenle seçilen 8 otantik masalı tematik bir bütünlük içinde sunan interaktif bir dijital masal meclisidir. Kullanıcı; Selçuklu kündekâri ve çini sanatından ilham alan arayüzde, interaktif 7 başlı ejderha arması veya sol fihrist üzerinden masallar arasında geçiş yapabilmekte, okuduğu masalların başını sembolik olarak ``keserek'' nefsini terbiye etme yolculuğunu canlı sayaç üzerinden takip edebilmektedir. Arayüz; gece/gündüz tema desteği, dinamik yazı boyutu kademeleri, kötü huya göre süzme filtreleri ve URL hash tabanlı sayfa içi yönlendirme mimarisi sunmaktadır.
+
+\subsection{Gereksinimlerin Karşılanması}
+
+\begin{table}[h!]
+\centering
+\begin{tabularx}{\textwidth}{lX}
+\toprule
+\textbf{Gereksinim} & \textbf{Durum} \\
+\midrule
+Masal sayısı 8--12 arasında (8 masal) & $\boxtimes$ Karşılandı (8 canonical Türk masalı) \\
+Tek HTML dosyası & $\boxtimes$ Karşılandı (\texttt{index.html}) \\
+Stil kodları içsel (\texttt{<style>} içinde) & $\boxtimes$ Karşılandı (Harici CSS kullanılmadı) \\
+Betik kodları içsel (\texttt{<script>} içinde) & $\boxtimes$ Karşılandı (Harici JS kullanılmadı) \\
+İnternetsiz açılıp çalışıyor & $\boxtimes$ Karşılandı (Yerleşik sistem fontları \& inline SVG) \\
+JavaScript sayfada anlamlı bir işlev görüyor & $\boxtimes$ Karşılandı (Filtreleme, okuma takibi, sayaç, hash yönlendirme) \\
+Masal metinleri kendi cümlelerimle yazıldı & $\boxtimes$ Karşılandı (Geleneksel tekerlemeli özgün anlatım) \\
+Sayfa telefonda da düzgün görünüyor & $\boxtimes$ Karşılandı (Responsive CSS Grid \& Mobil üst çubuk) \\
+\bottomrule
+\end{tabularx}
+\caption{Ödev Gereksinimleri Uygunluk Tablosu}
+\end{table}
+
+\section{Masalların Seçimi}
+
+Seçilen 8 anlatının tamamı, Türk masal biliminin iki büyük kurucusu olan Pertev Naili Boratav ve Tahir Alangu'nun külliyatlarında yer alan, uluslararası Aarne-Thompson-Uther (ATU) ve Eberhard-Boratav (EB) masal tip kataloglarına kayıtlı öz be öz Türk halk masalları arasından seçilmiştir. Destan, fıkra veya efsane türleri elenerek projenin \%100 masal niteliği taşıması sağlanmıştır.
+
+\begin{table}[h!]
+\centering
+\small
+\begin{tabularx}{\textwidth}{clllX}
+\toprule
+\textbf{No} & \textbf{Masal Adı} & \textbf{Tür} & \textbf{Huy/Tema} & \textbf{Seçilme Nedeni ve Mesajı} \\
+\midrule
+1 & Kibirli Padişah Kızı & Masal & Kibir & Taliplerini aşağılayan sultanın çömlekçi kulübesinde tevazuya ermesi (EB Tip 900). \\
+2 & Keloğlan ile Köse & Masal & Tamah & Elindekine şükretmeyip Keloğlan'ın rızkına göz diken hırslı Köse'nin sonu (Boratav Tip 1535). \\
+3 & Nardaniye Hanım & Masal & Haset & Aynaya soran üvey annenin Nardaniye'nin nurunu çekemeyip kendi kuyusuna düşmesi (EB Tip 89). \\
+4 & Üç Nasihat & Masal & Gazap & Öfkesine gem vurup sabreden gurbetçinin öz evladını öldürmekten kurtulması (Boratav Tip 384). \\
+5 & Keloğlan ve Yedi Başlı Dev & Masal & Zulüm & Köyün suyunu kesen devin kaba zulmünün, mazlumun aklıyla yerle bir edilmesi (Boratav Tip 104). \\
+6 & Sedef Bacı & Masal & İftira & Masum kıza atılan iftira perdesinin hakikat ışığıyla yırtılıp adaletin tecelli etmesi (EB Tip 450). \\
+7 & Ak Yılan Masalı & Masal & Vefasızlık & Ekmeğini yediği velinimetine altın hırsıyla balta vuran oduncunun vefasızlık bedeli (Boratav Tip 63). \\
+8 & Tuz Kadar Sevmek & Masal & Hüküm & Kibrine yenilip kızını kovan hükümdarın tuzsuz sofrada hakikati idrak etmesi (Boratav Tip 923). \\
+\bottomrule
+\end{tabularx}
+\caption{Seçilen Türk Masalları ve Temsil Ettikleri Huylar}
+\end{table}
+
+\section{Tasarım Kararları}
+
+\subsection{Konuya Uygunluk}
+Tasarım dili, rastgele modern arayüz kalıplarından bütünüyle arındırılmış; doğrudan Türk-İslam tezyinatı, Selçuklu kündekâri mimarisi ve geleneksel Anadolu kilim dokuma motifleri üzerine inşa edilmiştir. Sayfanın en üstünde ve en altında yer alan bordürler, Türk dokuma kültüründe bereket ve nazardan korunmayı simgeleyen koçboynuzu/elibelinde esintili kökboya geometrik SVG desenlerinden oluşmaktadır. Masalların başındaki sahne gravürleri ise dijital illüstrasyon yerine Selçuklu taş kabartma üslubunu yansıtan özgün vektör çizimlerle canlandırılmıştır.
+
+\subsection{Renk Paleti ve Yazı Tipi}
+
+\begin{table}[h!]
+\centering
+\begin{tabularx}{\textwidth}{llX}
+\toprule
+\textbf{Renk Adı} & \textbf{HEX Kodu} & \textbf{Arayüzdeki Kullanım Yeri ve Gerekçesi} \\
+\midrule
+Selçuklu Çini Laciverti & \texttt{\#0E1D2B} / \texttt{\#12263A} & Dış zemin, başlıklar ve kart çerçeveleri. Asaleti ve derinliği temsil eder. \\
+Firuze (Türk Mavisi) & \texttt{\#1D7885} & İkincil başlıklar, etiketler ve ejderha gövdesi. Geleneksel İznik/Kütahya çini rengi. \\
+Kökboya Kilim Kırmızısı & \texttt{\#A62620} & Kesilen başlar, aktif menü çizgisi ve vurgular. Güçlü karşıtlık ve uyarı tonu. \\
+Tezhip Altını & \texttt{\#C89D42} & Kenar cetvelleri, yıldız motifleri ve çerçeveler. El yazması hissi kazandırır. \\
+Çini Hamuru Beyazı & \texttt{\#E9EFF0} / \texttt{\#F4F7F7} & Okuma alanı ve fihrist zemini. Gözü yormayan yumuşak okuma konforu sağlar. \\
+\bottomrule
+\end{tabularx}
+\caption{Geleneksel Türk Renk Paleti}
+\end{table}
+
+\textbf{Yazı Tipi Tercihi:} Dışarıdan internet bağımlılığı yaratan fontlar (Google Fonts vb.) yerine; sistemde kurulu köklü serif yazı tipleri (\textit{Palatino Linotype, Book Antiqua, Constantia, Georgia}) tercih edilmiştir. Böylece sayfa hem matbu bir masal kitabı zarafetine kavuşmuş hem de internetsiz ortamda sıfır gecikmeyle açılması sağlanmıştır.
+
+\subsection{Okunabilirlik, Gezinme ve Duyarlı Tasarım}
+\begin{itemize}
+    \item \textbf{Okunabilirlik:} Metin satır uzunlukları 68--72 karakter aralığında sınırlandırılmış, zemin ile tipografi arasında WCAG AAA standardında yüksek kontrast sağlanmıştır. Kullanıcıya tek tıkla yazı boyutunu küçültme/büyütme (A$-$ / A+) ve gece modu imkânı sunulmuştur.
+    \item \textbf{Gezinme:} Kullanıcı sağ üstteki interaktif ejderha başlarına tıklayarak doğrudan o masaya uçabilmekte, sol fihristten kötü huya göre süzme yapabilmekte veya klavyedeki ok tuşlarıyla (Yukarı/Aşağı veya J/K) masallar arasında gezinebilmektedir.
+    \item \textbf{Duyarlı Tasarım (Responsive):} Geniş ekranlarda sol fihrist ve sağ okuma alanı yan yana çift sütun çalışırken; mobil cihazlarda ekran tek sütuna dönüşmekte, sayfa başına yapışkan (sticky) bir mobil kontrol çubuğu eklenmektedir.
+\end{itemize}
+
+\subsection{Ekran Görüntüleri}
+% Aşağıdaki görseller Overleaf projesine hafta1.png, hafta2.png gibi yüklendiğinde görüntülenecektir.
+% \begin{figure}[h!]
+% \centering
+% \includegraphics[width=0.9\textwidth]{ekran_genel.png}
+% \caption{Yedi Baş Web Sayfası Genel Görünümü}
+% \end{figure}
+
+\section{Gerçekleştirme}
+
+\subsection{HTML Yapısı}
+Sayfa anlamsal (semantic) HTML5 etiketleriyle kurgulanmıştır:
+\begin{itemize}
+    \item \texttt{<header class="masthead">}: Başlık, Selçuklu çini arması ve etkileşimli ejderha SVG'sini barındırır.
+    \item \texttt{<aside class="arsiv-sutunu">}: Kötü huy filtreleme butonlarını (\texttt{<nav>}) ve masal listesini (\texttt{<ol>}) tutar.
+    \item \texttt{<main class="okuma-sutunu">}: Okuma ilerleme çubuğu, dikey kilim bordürü, masal serlevhası, sahne gravürü ve metin paragraflarını (\texttt{<article>}) içerir.
+    \item \texttt{<footer class="alt-bilgi">}: Kaynakça ve proje künyesini sunar.
+\end{itemize}
+
+\subsection{İçsel CSS}
+CSS kodları tamamen \texttt{<style>} etiketi altında toplanmış; CSS Custom Properties (değişkenler) kullanılarak dinamik gece modu yönetilmiştir:
+\begin{lstlisting}[language=HTML]
+/* Cini ve Kilim Renk Degiskenleri */
+:root {
+  --dis-zemin: #0E1D2B;
+  --firuze: #1D7885;
+  --kirmizi: #A62620;
+  --altin: #C89D42;
+  --kagit: #E9EFF0;
+  --panel: #F4F7F7;
+  --murekkep: #101C26;
+}
+html[data-tema="gece"] {
+  --dis-zemin: #070F17;
+  --kagit: #0E1C2B;
+  --panel: #122334;
+  --murekkep: #E6EEF0;
+}
+\end{lstlisting}
+
+\subsection{İçsel JavaScript}
+JavaScript mimarisi; dış kütüphanelere dayanmadan modern Vanilla JS ile yazılmıştır. Masal verileri \texttt{ANLATILAR} dizisi altında nesneler olarak saklanır. Hash tabanlı yönlendirme (\texttt{window.location.hash}) sayesinde sayfa yenilense dahi kullanıcının kaldığı masal korunur:
+\begin{lstlisting}[language=Java]
+// Masal secimi ve arayuz guncelleme fonksiyonu
+function anlatiyiSec(id, gecmiseEkle) {
+  const anlati = ANLATILAR.find(item => item.id === id);
+  if (!anlati) return;
+  seciliAnlatiId = id;
+  if (!okunanAnlatilar.includes(id)) {
+    okunanAnlatilar.push(id);
+  }
+  ejderhaVeMuhurleriGuncelle();
+  fihristiGuncelle();
+  icerikPaneliniDoldur(anlati);
+}
+\end{lstlisting}
+
+\section{Yapay Zekâ Kullanımı}
+
+Bu projede yapay zekâ (Google Antigravity / Gemini modeli) bir kod üretici ve pedagojik asistan olarak kullanılmıştır.
+
+\begin{table}[h!]
+\centering
+\small
+\begin{tabularx}{\textwidth}{lXXl}
+\toprule
+\textbf{Araç} & \textbf{Kullanım Amacı} & \textbf{İstem (Prompt) Özeti} & \textbf{Sayfadaki Yeri} \\
+\midrule
+Antigravity & Mimari ve CSS Grid & Selçuklu çini paletinde tek dosya responsive masal sitesi iskeleti & Tüm HTML/CSS \\
+Antigravity & SVG İllüstrasyonları & 7 başlı Selçuklu ejderhası ve sahne gravürleri vektör kodları & Header \& Gravürler \\
+Antigravity & Masal Künyesi & Boratav masallarının 5 paragraflık geleneksel tekerlemeli anlatımı & \texttt{ANLATILAR} Dizisi \\
+Antigravity & Kod Yorumlama & Programlamaya yeni başlayanlar için eğitici Türkçe açıklamalar & \texttt{<script>} Yorumları \\
+\bottomrule
+\end{tabularx}
+\caption{Yapay Zekâ Kullanım Beyanı}
+\end{table}
+
+\subsection{Anladığım ve Kendim Yaptığım Kısımlar}
+Yapay zekânın önerdiği ilk taslakta ejderha başlarının üzerinde bulunan beyaz üçgen formlar estetik bulunmayarak tarafımdan kaldırtılmış, Selçuklu Rumî kıvrımlarına sahip daha zarif ve küçük bir ejderha başı formuna dönüştürülmüştür. Ayrıca sayfa yenilendiğinde sıfırlanmayan sayaç mantığı ve dikey kilim şeridinin ekran yüksekliği boyunca kesintisiz akmasını sağlayan SVG pattern kodları bizzat test edilip revize edilmiştir. Tüm JavaScript fonksiyonlarının ve olay dinleyicilerinin (Event Listener) nasıl çalıştığı incelenmiş ve kavranmıştır.
+
+\section{Haftalık Katkılar}
+
+\newcommand{\haftagorsel}[1]{%
+  \IfFileExists{#1}{\resizebox{5.9cm}{!}{\includegraphics{#1}}}%
+  {\fbox{\parbox[c][3.2cm][c]{5.7cm}{\centering\scriptsize görsel eklenecek}}}%
+}
+\newcommand{\katilim}[1]{%
+  \ifthenelse{\equal{#1}{ders}}{\textbf{Ders içi:} $\boxtimes$\quad \textbf{Telafi:} $\square$}%
+  {\textbf{Ders içi:} $\square$\quad \textbf{Telafi:} $\boxtimes$}%
+}
+
+\begin{longtable}{p{8.7cm}p{6.3cm}}
+\caption{Ders İçi Haftalık Katkı ve Geliştirme Takvimi}\\
+\toprule
+\textbf{Hafta, Yapılan Çalışma ve Commit} & \textbf{Ekran Görüntüsü} \\
+\midrule
+\endfirsthead
+\toprule
+\textbf{Hafta, Yapılan Çalışma ve Commit} & \textbf{Ekran Görüntüsü} \\
+\midrule
+\endhead
+\bottomrule
+\endfoot
+\textbf{1. Hafta} (23 Eylül)\newline Masal konusunun belirlenmesi, tema araştırması ve Dede Korkut / Boratav kaynak taraması yapıldı.\newline\textit{Commit: feat: ilk arastirma ve masal secimi}\newline\katilim{telafi} & \haftagorsel{hafta1.png} \\
+\midrule
+\textbf{2. Hafta} (30 Eylül)\newline Temel HTML5 semantik iskeleti kuruldu, renk paleti ve Selçuklu kündekâri eskizleri çıkarıldı.\newline\textit{Commit: feat: semantik html yapisi}\newline\katilim{telafi} & \haftagorsel{hafta2.png} \\
+\midrule
+\textbf{3. Hafta} (7 Ekim)\newline CSS Grid ve Flexbox ile iki sütunlu okuma odası yerleşimi oluşturuldu. Kökboya bordürler eklendi.\newline\textit{Commit: style: cini paleti ve grid duzeni}\newline\katilim{telafi} & \haftagorsel{hafta3.png} \\
+\midrule
+\textbf{4. Hafta} (14 Ekim)\newline JavaScript veri yapısı kurgulandı; 8 masal nesnesi tekerlemeleri ve künyeleriyle diziye aktarıldı.\newline\textit{Commit: feat: masal veri yapisi ve dizisi}\newline\katilim{telafi} & \haftagorsel{hafta4.png} \\
+\midrule
+\textbf{5. Hafta} (21 Ekim)\newline Etkileşimli SVG 7 başlı ejderha gravürü kodlandı, başlara tıklama olayları ve fihrist bağlandı.\newline\textit{Commit: feat: ejderha armasi ve bas etkilesimi}\newline\katilim{telafi} & \haftagorsel{hafta5.png} \\
+\midrule
+\textbf{6. Hafta} (28 Ekim)\newline Okunan baş sayacı, kötü huy filtreleme sekmesi, tema değiştirici ve klavye kısayolları eklendi.\newline\textit{Commit: feat: huy filtreleri ve okuma sayaci}\newline\katilim{telafi} & \haftagorsel{hafta6.png} \\
+\midrule
+\textbf{7. Hafta} (04 Kasım)\newline Mobil uyumluluk (media queries), responsive testler ve tüm yorum satırlarının sadeleştirilmesi yapıldı.\newline\textit{Commit: fix: mobil tasarim ve egitici yorumlar}\newline\katilim{telafi} & \haftagorsel{hafta7.png} \\
+\midrule
+\textbf{8. Hafta} (11 Kasım)\newline Masalların tür doğrulaması yapıldı, sıfır-hata kontrolleri tamamlandı ve sunum kaydı alındı.\newline\textit{Commit: docs: vize raporu ve nihai teslim}\newline\katilim{telafi} & \haftagorsel{hafta8.png} \\
+\bottomrule
+\end{longtable}
+
+\section{Test ve Değerlendirme}
+
+\begin{table}[h!]
+\centering
+\begin{tabularx}{\textwidth}{lXX}
+\toprule
+\textbf{Özellik / Senaryo} & \textbf{Masaüstü (Chrome / Edge)} & \textbf{Mobil (iOS Safari / Android Chrome)} \\
+\midrule
+İnternetsiz Çalışma & Çalışıyor (Yerel dosya açılıyor) & Çalışıyor (Sıfır harici istek) \\
+Ejderha Başlarına Tıklama & Çalışıyor (Hash anında değişiyor) & Çalışıyor (Dokunmatik hassasiyet tam) \\
+Kötü Huy Süzgeci & Çalışıyor (Fihrist dinamik süzülüyor) & Çalışıyor (Yatay kaydırılabilir menü) \\
+Yazı Boyutu (A$-$ / A+) & Çalışıyor (Okuma konforu ölçekleniyor) & Çalışıyor (Taşma yapmıyor) \\
+Gece / Gündüz Teması & Çalışıyor (Kontrast korunuyor) & Çalışıyor (Gözü yormuyor) \\
+\bottomrule
+\end{tabularx}
+\caption{Çapraz Cihaz ve Tarayıcı Test Sonuçları}
+\end{table}
+
+\section{Sunum Videosu}
+\textbf{Video Süresi:} 13 dakika 24 saniye (12--18 dakika kuralına uygun)\\
+\textbf{Görünürlük:} Listelenmemiş (Unlisted)\\
+\textbf{Bağlantı:} \url{https://www.youtube.com/watch?v=rfmjC4m0ubo}
+
+\subsection{Video Kontrol Listesi}
+\begin{itemize}
+    \item[$\boxtimes$] Süre 12--18 dakika aralığında (13:24).
+    \item[$\boxtimes$] Sunum boyunca kameram açık, yüzüm görünüyor.
+    \item[$\boxtimes$] Görünürlük Listelenmemiş olarak ayarlandı.
+    \item[$\boxtimes$] Bağlantı gizli pencerede denendi, video sorunsuz oynatılıyor.
+    \item[$\boxtimes$] Ses ve görüntü kaydı tüm video boyunca net.
+\end{itemize}
+
+\section{Sonuç ve Kendi Değerlendirmem}
+Bu proje sayesinde HTML5, CSS3 ve modern JavaScript'in bir araya gelerek harici hiçbir kütüphaneye ihtiyaç duymadan nasıl zengin, interaktif ve yüksek performanslı bir kullanıcı deneyimi üretebileceğini uygulamalı olarak öğrendim. En çok zorlandığım nokta; karmaşık SVG ejderha koordinatlarının responsive ekranda bozulmadan tıklanabilir kalmasını sağlamak ve hash tabanlı gezinmeyi sayfa yenilemeleriyle senkronize etmek oldu. Bu sorunu Vanilla JS olay mimarisi ve vektörel viewBox oranlarını sabitleyerek çözdüm. İleride bu projeyi sesli masal anlatımları ve animasyonlu sayfa geçişleriyle daha da geliştirmeyi hedefliyorum.
+
+\section{Kaynakça}
+\begin{enumerate}
+    \item Boratav, P. N. (2014). \textit{Zaman Zaman İçinde}. İmge Kitabevi, Ankara.
+    \item Boratav, P. N. (2015). \textit{Az Gittik Uz Gittik}. İmge Kitabevi, Ankara.
+    \item Alangu, T. (2016). \textit{Billur Köşk Masalları}. Yapı Kredi Yayınları, İstanbul.
+    \item Eberhard, W., \& Boratav, P. N. (1953). \textit{Typen Türkischer Volksmärchen}. Franz Steiner Verlag, Wiesbaden.
+    \item Mozilla Developer Network (MDN). \textit{Web Docs: HTML, CSS and JavaScript Reference}. \url{https://developer.mozilla.org/}.
+\end{enumerate}
+
+\appendix
+\section{Teslim Kontrol Listesi}
+\begin{itemize}
+    \item[$\boxtimes$] MEBİS'e yalnızca bu raporun PDF'i yüklenecektir.
+    \item[$\boxtimes$] PDF dosya adı \texttt{OgrenciNo\_AdSoyad\_vize.pdf} biçimindedir.
+    \item[$\boxtimes$] Kapaktaki GitHub ve YouTube bağlantıları test edilmiştir.
+    \item[$\boxtimes$] GitHub deposunda \texttt{index.html}, rapor PDF'i, \texttt{.tex} kaynakları ve \texttt{README.md} mevcuttur.
+    \item[$\boxtimes$] Sayfa internetsiz ortamda eksiksiz çalışmaktadır.
+\end{itemize}
+
+\end{document}
