@@ -1,0 +1,234 @@
+/* ==========================================================================
+       BÖLÜM 1: RENK DEĞİŞKENLERİ VE YAZI TİPLERİ (GÜNDÜZ VE GECE MODU)
+       Açıklama: Bütün sitede kullanılan Türk çini ve kilim renklerini burada
+       tek bir merkezden tanımlıyoruz. Böylece renkleri değiştirmek çok kolay olur.
+       ========================================================================== */
+    :root {
+      /* Gündüz Modu Renkleri */
+      --dis-zemin: #0E1D2B;       /* Dış sayfa arka planı: Selçuklu Çini Laciverti */
+      --lacivert: #12263A;        /* Başlıklar ve çini kuşak zemini */
+      --firuze: #1D7885;          /* Türk Mavisi / Firuze çini vurgu rengi */
+      --kagit: #E9EFF0;           /* Sol menü fihrist zemini: İznik çini hamuru */
+      --panel: #F4F7F7;           /* Sağ okuma odası zemini: Mermer beyazı */
+      --murekkep: #101C26;        /* Okuma metinleri: Koyu çini mürekkebi rengi */
+      --kirmizi: #A62620;         /* Vurgular ve sınırlar: Anadolu kökboya kilim kırmızısı */
+      --altin: #C89D42;           /* Çerçeveler ve detaylar: Selçuklu tezhip ve kündekâri altını */
+      --cizgi: #B8C7CB;           /* Bölümler arası ince cetvel çizgisi */
+      
+      /* Yazı Tipleri (Dışarıdan yükleme yapmadan doğrudan işletim sistemindeki fontları kullanır) */
+      --font-serif: "Palatino Linotype", "Book Antiqua", Palatino, "Iowan Old Style", Constantia, Georgia, "Times New Roman", serif;
+      --font-sans: "Segoe UI", system-ui, -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
+      --olcek: 1;                 /* A- ve A+ butonlarıyla değişen yazı boyutu çarpanı */
+    }
+
+    /* Gece Modu: Gece butonuna tıklandığında yukarıdaki renkler otomatik olarak bu koyu tonlara dönüşür */
+    html[data-tema="gece"] {
+      --dis-zemin: #070F17; --lacivert: #0B1724; --firuze: #2892A1;
+      --kagit: #0E1C2B; --panel: #122334; --murekkep: #E6EEF0;
+      --kirmizi: #C83A32; --altin: #D4AB50; --cizgi: #243B50;
+    }
+
+    /* ==========================================================================
+       BÖLÜM 2: SAYFA TEMEL SIFIRLAMASI VE SABİT SELÇUKLU ARKA PLANI
+       ========================================================================== */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { min-height: 100dvh; background-color: var(--dis-zemin); color: var(--murekkep); font-family: var(--font-serif); overflow-x: hidden; display: flex; flex-direction: column; }
+    :focus-visible { outline: 2px solid var(--altin); outline-offset: 2px; }
+    .selcuklu-arka-plan { position: fixed; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 0; opacity: 0.22; }
+
+    /* ==========================================================================
+       BÖLÜM 3: DIŞ KİTAP ÇERÇEVESİ, ÜST ŞERİT VE KÖKBOYA KİLİM BORDÜRÜ
+       ========================================================================== */
+    .sayfa-kapsayici { width: 100%; max-width: 1460px; margin: 0 auto; padding: 1.25rem 2rem 2.25rem; flex: 1; display: flex; flex-direction: column; position: relative; z-index: 1; }
+    .forma-cercevesi { border: 3px solid var(--altin); outline: 1px solid var(--firuze); outline-offset: -7px; background-color: var(--kagit); flex: 1; display: flex; flex-direction: column; }
+    .tamga-kusagi { background-color: var(--lacivert); color: var(--altin); border-bottom: 2px solid var(--altin); padding: 0.45rem 1.25rem; display: flex; justify-content: flex-start; align-items: center; text-align: left; font-family: var(--font-sans); font-size: 0.68rem; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; }
+    .tamga-kusagi > div { margin-right: auto; margin-left: 0; text-align: left; }
+    .ust-kilim-kusagi { width: 100%; height: 24px; background-color: var(--kirmizi); border-bottom: 2px solid var(--altin); overflow: hidden; }
+    .ust-kilim-kusagi svg { width: 100%; height: 24px; display: block; }
+
+    /* ==========================================================================
+       BÖLÜM 4: ÜST BAŞLIK (MASTHEAD) VE SAĞDAKİ YEDİ BAŞLI EJDERHA GRAVÜRÜ
+       Açıklama: Sol tarafta projenin ana başlığı ve sunuşu, sağ tarafta ise
+       Dede Korkut'taki Salur Kazan boyundan esinlenen 7 başlı ejderha arması yer alır.
+       ========================================================================== */
+    .masthead-govde { display: grid; grid-template-columns: 1.05fr 1.15fr; background-color: var(--lacivert); color: #F4F7F7; border-bottom: 3px solid var(--altin); }
+    .masthead-sol { padding: 1.85rem 2.25rem; border-right: 2px solid var(--altin); display: flex; flex-direction: column; justify-content: space-between; }
+    .forma-damgasi { font-family: var(--font-sans); font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.18em; color: var(--altin); font-weight: 700; margin-bottom: 0.65rem; }
+    .masthead-baslik { font-size: clamp(2.9rem, 6vw, 5.2rem); font-weight: normal; letter-spacing: -0.02em; line-height: 0.92; color: #F4F7F7; margin-bottom: 0.75rem; }
+    .masthead-kunye { font-size: clamp(1.1rem, 1.5vw, 1.35rem); font-style: italic; line-height: 1.4; color: var(--altin); max-width: 42ch; }
+    .masthead-tez-notu { margin-top: 1.15rem; padding-top: 0.9rem; border-top: 1px solid var(--firuze); font-size: 0.94rem; line-height: 1.58; color: #D8E4E7; }
+    .masthead-tez-notu strong { color: var(--altin); }
+
+    .masthead-sag-gravur { background-color: #0B1826; padding: 1.15rem 1.5rem; display: flex; flex-direction: column; justify-content: space-between; }
+    .gravur-ust-etiket { display: flex; justify-content: space-between; font-family: var(--font-sans); font-size: 0.67rem; text-transform: uppercase; letter-spacing: 0.15em; color: var(--altin); border-bottom: 1px solid var(--firuze); padding-bottom: 0.4rem; margin-bottom: 0.45rem; font-weight: 700; }
+    .ejderha-gravur-kapsayici { width: 100%; display: flex; justify-content: center; padding: 0.15rem 0; }
+    .ejderha-gravur-kapsayici svg { width: 100%; max-width: 590px; height: auto; display: block; }
+    .ejderha-bas-grubu { cursor: pointer; }
+    .ejderha-bas-grubu .bas-cerceve { fill: #12263A; stroke: var(--altin); stroke-width: 1.4; }
+    .ejderha-bas-grubu .bas-dil { stroke: var(--kirmizi); fill: none; }
+    .ejderha-bas-grubu .bas-goz { fill: var(--altin); }
+    .ejderha-bas-grubu .bas-no { font-family: var(--font-serif); font-size: 8.5px; font-weight: bold; fill: var(--altin); }
+    .ejderha-bas-grubu .bas-isim-etiket { font-family: var(--font-sans); font-size: 7px; letter-spacing: 0.08em; fill: #E9EFF0; font-weight: 700; }
+    .ejderha-bas-grubu:hover .bas-cerceve { stroke: #F4F7F7; stroke-width: 2; fill: var(--firuze); }
+    .ejderha-bas-grubu:hover .bas-dil { stroke: #F4F7F7; stroke-width: 1.3; }
+    .ejderha-bas-grubu.kesildi .bas-cerceve { fill: var(--kirmizi); stroke: var(--altin); }
+    .ejderha-bas-grubu.kesildi .bas-goz, .ejderha-bas-grubu.kesildi .bas-no { stroke: #F4F7F7; fill: #F4F7F7; }
+    .ejderha-bas-grubu.kesildi .bas-dil { stroke: #F4F7F7; }
+    .ejderha-bas-grubu.secili .bas-cerceve { stroke: #F4F7F7; stroke-width: 2.3; }
+    .gravur-alt-not { font-size: 0.8rem; font-style: italic; text-align: right; color: #B8C7CB; padding-top: 0.35rem; border-top: 1px solid var(--firuze); }
+
+    /* ==========================================================================
+       BÖLÜM 5: YEDİ BAŞ OKUMA ŞERİDİ VE YAZI BOYUTU / GECE MODU BUTONLARI
+       Açıklama: Kullanıcının kaç hikaye okuduğunu gösteren elmas mühürler
+       ve A- / A+ / Gece modu butonlarının stilleri burada bulunur.
+       ========================================================================== */
+    .bas-seridi { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; padding: 0.5rem 1.5rem; border-bottom: 2px solid var(--murekkep); background-color: var(--kagit); }
+    .yedi-bas-gostergesi, .elmas-dizisi, .okuma-araclari { display: flex; align-items: center; gap: 0.45rem; flex-wrap: wrap; }
+    .gosterge-etiket { font-family: var(--font-sans); font-size: 0.69rem; text-transform: uppercase; letter-spacing: 0.15em; font-weight: 700; color: var(--lacivert); margin-right: 0.35rem; }
+    html[data-tema="gece"] .gosterge-etiket { color: var(--altin); }
+    .bas-elmas-buton, .hukum-isareti-buton { background: none; border: none; cursor: pointer; padding: 0.25rem 0.2rem; min-width: 30px; min-height: 44px; display: inline-flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; color: var(--murekkep); }
+    .bas-elmas-buton svg { width: 17px; height: 17px; display: block; }
+    .bas-elmas-buton .elmas-sekil { fill: var(--panel); stroke: var(--firuze); stroke-width: 1.6; }
+    .bas-elmas-buton.okundu .elmas-sekil { fill: var(--kirmizi); stroke: var(--kirmizi); }
+    .bas-elmas-buton.aktif-bas .elmas-sekil { stroke: var(--altin); stroke-width: 2.5; }
+    .elmas-mini-no { font-family: var(--font-sans); font-size: 0.58rem; font-weight: 600; }
+    .bas-elmas-buton.okundu .elmas-mini-no { color: var(--kirmizi); font-weight: 700; }
+    html[data-tema="gece"] .bas-elmas-buton.okundu .elmas-mini-no { color: var(--altin); }
+    .hukum-ayirici-cizgi { width: 2px; height: 22px; background-color: var(--firuze); margin: 0 0.25rem; }
+    .hukum-isareti-cizgi { display: block; width: 18px; height: 5px; border: 1.5px solid var(--firuze); margin-bottom: 2px; }
+    .hukum-isareti-buton.okundu .hukum-isareti-cizgi { background-color: var(--kirmizi); border-color: var(--kirmizi); }
+    .bas-sayac-metni { font-family: var(--font-sans); font-size: 0.72rem; letter-spacing: 0.14em; font-weight: 700; padding: 0.28rem 0.7rem; border: 1px solid var(--firuze); background-color: var(--lacivert); color: var(--altin); margin-left: 0.35rem; }
+    .arac-dugme { background: var(--panel); border: 1px solid var(--murekkep); color: var(--murekkep); font-family: var(--font-sans); font-size: 0.72rem; font-weight: 700; letter-spacing: 0.12em; min-height: 44px; min-width: 44px; padding: 0 0.8rem; cursor: pointer; }
+    .arac-dugme:hover { background-color: var(--kirmizi); color: #F4F7F7; border-color: var(--kirmizi); }
+    .arac-dugme[aria-pressed="true"] { background-color: var(--lacivert); color: var(--altin); border-color: var(--altin); }
+
+    /* ==========================================================================
+       BÖLÜM 6: İKİ SÜTUNLU ANA DÜZEN VE SOL FİHRİST (HİKÂYE LİSTESİ)
+       Açıklama: Sol tarafta kötü huylara göre filtreleme sekmeleri (Kibir, Tamah vb.)
+       ve 8 hikayenin sıralandığı dikey arşiv listesi yer alır.
+       ========================================================================== */
+    .okuma-odasi { display: grid; grid-template-columns: 380px 1fr; flex: 1; }
+    .arsiv-sutunu { position: sticky; top: 0; max-height: 100dvh; overflow-y: auto; border-right: 2px solid var(--murekkep); background-color: var(--kagit); display: flex; flex-direction: column; }
+    .arsiv-ust-bolum { padding: 0.9rem 1.15rem 0.65rem; border-bottom: 2px solid var(--firuze); background-color: var(--panel); }
+    .fihrist-baslik-satiri { display: flex; justify-content: space-between; font-family: var(--font-sans); font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.15em; font-weight: 700; color: var(--kirmizi); margin-bottom: 0.45rem; }
+    html[data-tema="gece"] .fihrist-baslik-satiri { color: var(--altin); }
+    .huy-filtreleri { display: flex; flex-wrap: wrap; gap: 0.1rem 0.55rem; }
+    .filtre-sekme { background: none; border: none; border-bottom: 2px solid transparent; color: var(--murekkep); font-family: var(--font-sans); font-size: 0.71rem; text-transform: uppercase; letter-spacing: 0.11em; padding: 0.25rem 0.1rem; min-height: 40px; cursor: pointer; opacity: 0.78; font-weight: 600; }
+    .filtre-sekme:hover, .filtre-sekme.aktif { opacity: 1; color: var(--kirmizi); }
+    .filtre-sekme.aktif { font-weight: 700; border-bottom-color: var(--kirmizi); }
+    html[data-tema="gece"] .filtre-sekme.aktif { color: var(--altin); border-bottom-color: var(--altin); }
+    .sonuc-sayaci-cubugu { padding: 0.48rem 1.15rem; background-color: var(--lacivert); color: #E9EFF0; border-bottom: 1px solid var(--altin); display: flex; justify-content: space-between; font-family: var(--font-sans); font-size: 0.66rem; letter-spacing: 0.15em; font-weight: 700; }
+    .sonuc-sayaci-cubugu span:last-child { color: var(--altin); }
+    .anlati-listesi { list-style: none; }
+    .anlati-satiri { border-bottom: 1px solid var(--cizgi); }
+    .anlati-satiri.hukum-satiri { border-top: 2px solid var(--kirmizi); background-color: var(--panel); }
+    .anlati-baglantisi { display: grid; grid-template-columns: 3.4rem 1fr auto; align-items: center; gap: 0.75rem; padding: 0.9rem 1.1rem; min-height: 72px; text-decoration: none; color: var(--murekkep); border-left: 4px solid transparent; }
+    .anlati-baglantisi:hover, .anlati-baglantisi[aria-current="page"] { background-color: var(--panel); border-left-color: var(--kirmizi); }
+    .satir-numara-kutusu { display: flex; flex-direction: column; align-items: center; border-right: 1px solid var(--cizgi); padding-right: 0.6rem; }
+    .satir-tamga { font-family: var(--font-sans); font-size: 0.62rem; font-weight: 700; color: var(--firuze); letter-spacing: 0.08em; }
+    .satir-numara { font-size: 1.35rem; font-weight: bold; line-height: 1.05; }
+    .anlati-baglantisi[aria-current="page"] .satir-numara { color: var(--kirmizi); }
+    .satir-bilgi { display: flex; flex-direction: column; gap: 0.22rem; }
+    .satir-baslik { font-size: 1.15rem; line-height: 1.2; }
+    .anlati-baglantisi[aria-current="page"] .satir-baslik { font-weight: bold; }
+    .satir-alt-meta { font-family: var(--font-sans); font-size: 0.66rem; text-transform: uppercase; letter-spacing: 0.13em; color: var(--firuze); font-weight: 700; }
+    .satir-okundu-isareti svg { width: 14px; height: 14px; display: block; }
+    .satir-okundu-isareti polygon { fill: transparent; stroke: var(--firuze); stroke-width: 1.5; }
+    .anlati-satiri.okundu .satir-okundu-isareti polygon { fill: var(--kirmizi); stroke: var(--kirmizi); }
+
+    /* ==========================================================================
+       BÖLÜM 7: SAĞ OKUMA PANELİ, KİLİM BORDÜRÜ VE ANLATI DETAYLARI
+       Açıklama: Kullanıcı bir hikaye seçtiğinde sağ tarafta açılan okuma sayfasıdır.
+       Hikayenin başlığı, özel çizim gravürü, arşiv fişi (kötü huy, bedel)
+       ve hikaye metni burada gösterilir.
+       ========================================================================== */
+    .okuma-sutunu { background-color: var(--panel); position: relative; display: grid; grid-template-columns: 42px 1fr; }
+    .ilerleme-cubugu-kapsayici { position: sticky; top: 0; grid-column: 1 / -1; width: 100%; height: 4px; background-color: var(--cizgi); z-index: 25; }
+    .ilerleme-cubugu { height: 100%; width: 0%; background-color: var(--kirmizi); }
+    .dikey-kilim-seridi { width: 42px; height: 100%; min-height: 100%; border-right: 2px solid var(--altin); background-color: var(--lacivert); display: flex; justify-content: center; overflow: hidden; }
+    .dikey-kilim-seridi svg { width: 32px; height: 100%; min-height: 100%; display: block; }
+    .okuma-icerigi-sarici { padding: 2.1rem 3rem 4rem 2.6rem; max-width: 940px; width: 100%; }
+    .mobil-ust-cubuk { display: none; }
+
+    .bos-defter { border: 2px solid var(--lacivert); outline: 1px solid var(--altin); outline-offset: -5px; background-color: var(--kagit); padding: 2rem; }
+    .bos-defter.gizli, .anlati-gorunumu { display: none; }
+    .anlati-gorunumu.aktif { display: block; }
+    .bos-defter-ust-damga { display: flex; justify-content: space-between; border-bottom: 2px solid var(--firuze); padding-bottom: 0.6rem; margin-bottom: 1.25rem; font-family: var(--font-sans); font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.15em; font-weight: 700; color: var(--kirmizi); }
+    html[data-tema="gece"] .bos-defter-ust-damga { color: var(--altin); }
+    .bos-defter-baslik { font-size: clamp(1.6rem, 2.8vw, 2.25rem); font-weight: normal; line-height: 1.18; margin-bottom: 0.85rem; }
+    .bos-defter-aciklama { font-size: 1.05rem; line-height: 1.68; margin-bottom: 1.5rem; max-width: 65ch; }
+
+    .bos-defter-matris { display: grid; grid-template-columns: repeat(4, 1fr); border-top: 2px solid var(--lacivert); border-left: 2px solid var(--lacivert); margin-bottom: 1.5rem; }
+    .matris-hucre { background: var(--panel); border-right: 2px solid var(--lacivert); border-bottom: 2px solid var(--lacivert); padding: 0.7rem; text-align: left; cursor: pointer; color: var(--murekkep); display: flex; flex-direction: column; justify-content: space-between; gap: 0.45rem; }
+    .matris-hucre:hover { background-color: var(--kagit); border-top: 3px solid var(--kirmizi); }
+    .matris-ust { display: flex; justify-content: space-between; width: 100%; }
+    .matris-no { font-family: var(--font-sans); font-size: 0.64rem; letter-spacing: 0.12em; color: var(--kirmizi); font-weight: 700; }
+    .matris-tur { font-family: var(--font-sans); font-size: 0.62rem; letter-spacing: 0.08em; color: var(--firuze); font-weight: 700; }
+    .matris-minyaturler { width: 100%; border: 1px solid var(--firuze); background-color: var(--kagit); padding: 0.25rem; }
+    .matris-minyaturler svg { width: 100%; height: 66px; display: block; }
+    .matris-huy { font-size: 1.06rem; font-weight: bold; }
+    .matris-isim { font-size: 0.84rem; font-style: italic; opacity: 0.88; }
+    .rastgele-bas-dugme, .gezinme-baglanti { background: var(--lacivert); border: 1px solid var(--altin); color: #F4F7F7; font-family: var(--font-sans); font-size: 0.73rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.14em; padding: 0 1.2rem; min-height: 44px; cursor: pointer; }
+    .rastgele-bas-dugme:hover, .gezinme-baglanti:hover:not(:disabled) { background-color: var(--kirmizi); border-color: var(--altin); }
+    .gezinme-baglanti:disabled { opacity: 0.35; cursor: default; }
+
+    .tezhip-alinlik { width: 100%; margin-bottom: 1rem; border: 1px solid var(--altin); background-color: var(--lacivert); padding: 0.4rem 0.85rem; display: flex; justify-content: space-between; align-items: center; }
+    .anlati-ust-meta { font-family: var(--font-sans); font-size: 0.73rem; text-transform: uppercase; letter-spacing: 0.15em; color: var(--altin); font-weight: 700; }
+    .anlati-serlevha { display: grid; grid-template-columns: 1fr 245px; gap: 1.75rem; align-items: center; margin-bottom: 1.5rem; padding-bottom: 1.25rem; border-bottom: 2px solid var(--firuze); }
+    .anlati-baslik { font-size: clamp(2.1rem, 4vw, 3.1rem); font-weight: normal; line-height: 1.05; margin-bottom: 0.75rem; }
+    .anlati-ozet { font-style: italic; font-size: 1.12rem; line-height: 1.55; opacity: 0.92; }
+    .anlati-sahne-gravuru { border: 2px solid var(--lacivert); outline: 1px solid var(--altin); outline-offset: -4px; background-color: var(--kagit); padding: 0.6rem; display: flex; flex-direction: column; align-items: center; gap: 0.35rem; }
+    .anlati-sahne-gravuru svg { width: 100%; height: 124px; display: block; }
+    .gravur-altyazi { font-family: var(--font-sans); font-size: 0.62rem; text-transform: uppercase; letter-spacing: 0.14em; font-weight: 700; color: var(--kirmizi); }
+    html[data-tema="gece"] .gravur-altyazi { color: var(--altin); }
+
+    .arsiv-fisi { display: grid; grid-template-columns: 0.95fr 1.1fr 1.75fr; border: 2px solid var(--lacivert); border-top: 4px solid var(--kirmizi); margin-bottom: 1.75rem; background-color: var(--kagit); }
+    .fis-hucre { padding: 0.85rem 1.1rem; border-right: 1px solid var(--cizgi); }
+    .fis-hucre:last-child { border-right: none; }
+    .fis-etiket { display: block; font-family: var(--font-sans); font-size: 0.66rem; text-transform: uppercase; letter-spacing: 0.15em; color: var(--firuze); margin-bottom: 0.3rem; font-weight: 700; }
+    .fis-deger { font-size: 1rem; line-height: 1.42; }
+    .fis-hucre:first-child .fis-deger { color: var(--kirmizi); font-weight: bold; font-size: 1.18rem; }
+    html[data-tema="gece"] .fis-hucre:first-child .fis-deger { color: var(--altin); }
+    .motif-ayirici { margin: 1.5rem 0 1.85rem; width: 100%; max-width: 62ch; }
+    .motif-ayirici svg { width: 100%; height: 22px; display: block; }
+
+    .anlati-govde { font-size: calc(1.22rem * var(--olcek)); line-height: 1.74; max-width: 62ch; counter-reset: paragraf-sayaci; }
+    .anlati-govde p { margin-bottom: 1.45rem; counter-increment: paragraf-sayaci; }
+    .anlati-govde p:not(:first-of-type)::before { content: "❖ " counter(paragraf-sayaci, upper-roman); font-family: var(--font-sans); font-size: 0.64rem; letter-spacing: 0.1em; color: var(--firuze); font-weight: 700; margin-right: 0.55rem; vertical-align: middle; }
+    .anlati-govde p:first-of-type::first-letter { float: left; font-size: calc(3.85rem * var(--olcek)); line-height: 0.86; padding: 0.35rem 0.6rem 0.25rem; margin: 0.15rem 0.75rem 0.1rem 0; color: var(--altin); background-color: var(--lacivert); border: 2px solid var(--kirmizi); }
+
+    .kapanis-hukum-blogu { margin-top: 2.25rem; padding: 1.15rem 1.35rem; border: 1px solid var(--firuze); border-left: 5px solid var(--kirmizi); background-color: var(--kagit); max-width: 62ch; }
+    .kapanis-etiket { display: block; font-family: var(--font-sans); font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.16em; color: var(--kirmizi); font-weight: 700; margin-bottom: 0.35rem; }
+    html[data-tema="gece"] .kapanis-etiket { color: var(--altin); }
+    .kapanis-cumlesi { font-size: calc(1.12rem * var(--olcek)); font-style: italic; line-height: 1.55; }
+    .anlati-alt-bilgi { margin-top: 2rem; padding-top: 1rem; border-top: 2px solid var(--firuze); max-width: 62ch; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; }
+    .kaynak-notu { font-family: var(--font-sans); font-size: 0.72rem; font-weight: 600; opacity: 0.88; }
+    .onceki-sonraki-nav { display: flex; gap: 0.65rem; }
+
+    /* ==========================================================================
+       BÖLÜM 8: ALT BİLGİ (FOOTER) VE MOBİL UYUMLULUK (RESPONSIVE TASARIM)
+       Açıklama: Sayfanın en altındaki kaynakça/proje künyesi ve telefon/tablet
+       ekranlarında iki sütunlu yapının tek sütuna geçmesini sağlayan kurallar.
+       ========================================================================== */
+    .alt-bilgi { border-top: 3px solid var(--altin); background-color: var(--lacivert); color: #E9EFF0; padding: 1.4rem 1.75rem 1.15rem; font-family: var(--font-sans); font-size: 0.74rem; line-height: 1.6; }
+    .alt-bilgi-izgara { display: grid; grid-template-columns: 2fr 1fr; gap: 2rem; padding-bottom: 1.15rem; }
+    .alt-bilgi-baslik { text-transform: uppercase; letter-spacing: 0.15em; font-size: 0.7rem; font-weight: 700; margin-bottom: 0.35rem; color: var(--altin); }
+    .alt-bilgi-metin { opacity: 0.9; max-width: 75ch; }
+    .kapanis-kilim-seridi { width: 100%; overflow: hidden; padding-top: 0.75rem; border-top: 1px solid var(--firuze); }
+    .kapanis-kilim-seridi svg { width: 100%; height: 22px; display: block; }
+
+    @media (max-width: 960px) {
+      .sayfa-kapsayici { padding: 0.4rem; }
+      .masthead-govde, .okuma-odasi, .anlati-serlevha, .arsiv-fisi, .alt-bilgi-izgara { grid-template-columns: 1fr; }
+      .masthead-sol { border-right: none; border-bottom: 2px solid var(--altin); padding: 1.35rem 1rem; }
+      .arsiv-sutunu { position: static; max-height: none; border-right: none; }
+      .okuma-sutunu, .dikey-kilim-seridi, body.mobil-okuma-acik .arsiv-sutunu { display: none; }
+      body.mobil-okuma-acik .okuma-sutunu { display: block; min-height: 100dvh; }
+      .okuma-icerigi-sarici { padding: 1rem 1rem 2.5rem; }
+      .mobil-ust-cubuk { display: flex; justify-content: space-between; align-items: center; gap: 0.75rem; padding: 0.65rem 0; margin-bottom: 1.25rem; border-bottom: 2px solid var(--firuze); position: sticky; top: 4px; background-color: var(--panel); z-index: 15; }
+      .deftere-don-dugme { background: var(--lacivert); border: 1px solid var(--altin); color: #F4F7F7; font-family: var(--font-sans); font-size: 0.72rem; font-weight: 700; min-height: 44px; padding: 0 0.85rem; cursor: pointer; }
+      .mobil-cubuk-baslik { font-size: 0.95rem; font-style: italic; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+      .fis-hucre { border-right: none; border-bottom: 1px solid var(--cizgi); }
+      .bos-defter-matris { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 420px) { .bos-defter-matris { grid-template-columns: 1fr; } }
